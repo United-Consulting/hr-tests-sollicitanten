@@ -354,6 +354,12 @@
       </div>
     </a>
 
+    <a href="business-support.html" class="test-card" id="bsTestTile" data-bu-restrict="Business Support" style="display:none;border-left:4px solid var(--charcoal);">
+      <div class="test-card-label">United Business Support <span class="test-card-arrow">→</span></div>
+      <div class="test-card-title">Test<br>Eerste Gesprek</div>
+      <div class="test-card-meta">26 vragen (3 delen) &nbsp;·&nbsp; 10 minuten &nbsp;·&nbsp; offline</div>
+    </a>
+
     <div class="test-grid" id="hrTestsGrid" data-bu-restrict="HR">
       <a href="hard-skills.html" class="test-card">
         <div class="test-card-label">HR · Hard Skills <span class="test-card-arrow">→</span></div>
@@ -416,26 +422,29 @@
     const bu = sessionStorage.getItem(BU_KEY);
     const phase = sessionStorage.getItem(PHASE_KEY) || 'interview-1';
     const isHR = bu === 'HR';
+    const isBS = bu === 'Business Support';
     const isPhase2 = phase === 'interview-2';
 
     const featured = document.querySelector('.featured-test');
+    const bsTile = document.getElementById('bsTestTile');
     const hrGrid = document.getElementById('hrTestsGrid');
     const emptyMsg = document.getElementById('emptyPhaseMsg');
 
-    // Fase 1: alleen Startup Attitude (voor alle BUs)
-    // Fase 2 + HR: alleen Hard + Soft Skills (Startup Attitude verborgen)
-    // Fase 2 + niet-HR: niets meer — "alles afgerond" message
+    // Reset alles naar hidden, dan tonen wat past bij fase + BU
+    if (featured) featured.style.display = 'none';
+    if (bsTile) bsTile.style.display = 'none';
+    if (hrGrid) hrGrid.style.display = 'none';
+    if (emptyMsg) emptyMsg.style.display = 'none';
+
     if (!isPhase2) {
+      // Interview 1: Startup Attitude voor iedereen + BS-test extra voor Business Support
       if (featured) featured.style.display = '';
-      if (hrGrid) hrGrid.style.display = 'none';
-      if (emptyMsg) emptyMsg.style.display = 'none';
+      if (isBS && bsTile) bsTile.style.display = '';
     } else if (isHR) {
-      if (featured) featured.style.display = 'none';
+      // Interview 2 + HR: Hard + Soft Skills
       if (hrGrid) hrGrid.style.display = '';
-      if (emptyMsg) emptyMsg.style.display = 'none';
     } else {
-      if (featured) featured.style.display = 'none';
-      if (hrGrid) hrGrid.style.display = 'none';
+      // Interview 2 + niet-HR: klaar
       if (emptyMsg) emptyMsg.style.display = '';
     }
 

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#434A55">
+<link rel="manifest" href="manifest.json">
+<title>United Business Support — Test Eerste Gesprek</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --charcoal: #434A55;
+    --charcoal-dark: #2e333c;
+    --border: #E3E7EE;
+    --border-mid: #D8DCE3;
+    --text: #424B55;
+    --muted: #888;
+    --accent-bg: #EAEDF2;
+    --correct: #2e7d52;
+    --correct-bg: #eaf4ee;
+    --wrong: #a0341e;
+    --wrong-bg: #fdf0ed;
+    --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-stack);
+    background: #F5F6F8;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--charcoal);
+    padding: 0 2.5rem; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo { width: 22px; height: 22px; background: #fff; opacity: 0.9; }
+  .topbar-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #fff; }
+  .topbar-right { display: flex; align-items: center; gap: 20px; }
+  .progress-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1.5px; }
+  .progress-bar-wrap { width: 140px; height: 3px; background: rgba(255,255,255,0.15); }
+  .progress-bar-fill { height: 100%; background: #fff; width: 0%; transition: width 0.4s ease; }
+  .progress-count { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.7); min-width: 46px; text-align: right; }
+  .topbar-progress { display: flex; align-items: center; gap: 10px; }
+
+  /* ── TIMER ── */
+  .topbar-timer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border: 1px solid rgba(255,255,255,0.2);
+  }
+  .timer-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1.5px; }
+  .timer-value {
+    font-size: 13px; font-weight: 700; color: #fff;
+    font-variant-numeric: tabular-nums; letter-spacing: 0.5px;
+    min-width: 48px; text-align: right;
+  }
+  .topbar-timer.warning { border-color: #f5b041; }
+  .topbar-timer.warning .timer-value { color: #f5b041; }
+  .topbar-timer.critical { border-color: #e74c3c; background: rgba(231,76,60,0.15); }
+  .topbar-timer.critical .timer-value { color: #ff7c6a; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* Time-up + online-warning banners */
+  .timeup-banner {
+    background: #a0341e; color: #fff;
+    padding: 14px 20px; text-align: center;
+    font-size: 12px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .online-warning {
+    position: sticky; top: 56px; z-index: 50;
+    background: #a0341e; color: #fff;
+    padding: 14px 20px; text-align: center;
+    font-size: 12.5px; font-weight: 600; letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: none;
+  }
+  .online-warning.show { display: block; animation: slidedown 0.3s ease; }
+  @keyframes slidedown { from { transform: translateY(-100%); } to { transform: none; } }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadein 0.25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ── WELCOME CARD ── */
+  .welcome-card { background: var(--charcoal); padding: 3rem 2.5rem; margin-bottom: 1.5rem; }
+  .welcome-card .tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }
+  .welcome-card h1 { font-size: 26px; font-weight: 300; text-transform: uppercase; letter-spacing: 2px; color: #fff; margin-bottom: 8px; line-height: 1.3; }
+  .welcome-card h1 strong { font-weight: 700; }
+  .welcome-card p { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 1.25rem; line-height: 1.7; }
+  .welcome-meta { display: flex; gap: 2.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.12); }
+  .welcome-meta-item .val { font-size: 22px; font-weight: 700; color: #fff; }
+  .welcome-meta-item .lbl { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+
+  /* ── START CARD ── */
+  .start-card { background: #fff; border: 1px solid var(--border); padding: 2rem 2.5rem; }
+  .start-card label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--charcoal); margin-bottom: 10px; }
+  .start-card input { width: 100%; border: none; border-bottom: 2px solid var(--border-mid); padding: 10px 0; font-family: var(--font-stack); font-size: 15px; color: var(--text); background: transparent; outline: none; transition: border-color 0.2s; }
+  .start-card input:focus { border-bottom-color: var(--charcoal); }
+  .start-actions { margin-top: 2rem; display: flex; justify-content: flex-end; align-items: center; gap: 1rem; }
+  .start-error { font-size: 11px; color: var(--wrong); display: none; }
+  .start-error.show { display: block; }
+
+  .conn-pill { margin-top: 1rem; padding: 14px 18px; background: #fff; border: 1px solid var(--border); border-left: 4px solid #f5b041; display: flex; align-items: center; gap: 14px; font-size: 12.5px; color: var(--text); line-height: 1.5; }
+  .conn-pill.offline { border-left-color: var(--correct); background: var(--correct-bg); }
+  .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: #f5b041; flex-shrink: 0; animation: pulse-dot 1.5s infinite; }
+  .conn-pill.offline .conn-dot { background: var(--correct); animation: none; }
+  @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    background: #fff; border: 1px solid var(--border);
+    border-left: 4px solid var(--charcoal);
+    padding: 1.25rem 1.5rem; margin: 1.5rem 0 1rem;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-header h2 { font-size: 15px; font-weight: 700; color: var(--charcoal); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .section-header p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: #fff; border: 1px solid var(--border);
+    margin-bottom: 1rem; border-top: 3px solid var(--border);
+    transition: border-top-color 0.3s;
+  }
+  .question-card.answered { border-top-color: var(--charcoal); }
+  .question-card.correct-card { border-top-color: var(--correct); }
+  .question-card.wrong-card { border-top-color: var(--wrong); }
+
+  .question-header {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+  }
+  .q-num {
+    font-size: 10px; font-weight: 700; color: var(--charcoal);
+    background: var(--accent-bg); padding: 3px 8px; letter-spacing: 1px;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .q-text { font-size: 13px; font-weight: 600; color: var(--charcoal); line-height: 1.55; white-space: pre-wrap; }
+
+  .options-list { padding: 0.75rem 1.5rem 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; cursor: pointer; border: 1px solid var(--border);
+    transition: background 0.15s, border-color 0.15s; user-select: none;
+  }
+  .option:hover { background: var(--accent-bg); border-color: var(--border-mid); }
+  .option input[type="radio"] { display: none; }
+  .option-key {
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    width: 18px; height: 18px; border: 1.5px solid var(--border-mid);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; transition: all 0.15s;
+  }
+  .option-text { font-size: 12.5px; color: var(--text); line-height: 1.5; }
+  .option.selected { background: var(--accent-bg); border-color: var(--charcoal); }
+  .option.selected .option-key { background: var(--charcoal); border-color: var(--charcoal); color: #fff; }
+  .option.correct-answer { background: var(--correct-bg); border-color: var(--correct); }
+  .option.correct-answer .option-key { background: var(--correct); border-color: var(--correct); color: #fff; }
+  .option.wrong-answer { background: var(--wrong-bg); border-color: var(--wrong); }
+  .option.wrong-answer .option-key { background: var(--wrong); border-color: var(--wrong); color: #fff; }
+  .option.disabled { cursor: default; pointer-events: none; }
+  .option.faded { opacity: 0.4; }
+
+  /* Two-column preference (A/B) layout for Deel 1 */
+  .pref-list { padding: 0.75rem 1.5rem 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  @media (max-width: 600px) { .pref-list { grid-template-columns: 1fr; } }
+  .option.pref-option { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .option.pref-option .option-text { font-size: 12.5px; line-height: 1.55; }
+
+  /* Textarea voor open vraag (Deel 3) */
+  .answer-area { padding: 1rem 1.5rem 1.5rem; }
+  .answer-area textarea {
+    width: 100%; min-height: 220px;
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    font-family: var(--font-stack);
+    font-size: 13px; color: var(--text);
+    line-height: 1.6; resize: vertical;
+    outline: none; transition: border-color 0.2s;
+    background: #FCFCFD;
+  }
+  .answer-area textarea:focus { border-color: var(--charcoal); background: #fff; }
+  .char-count { margin-top: 6px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; text-align: right; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    background: var(--charcoal); color: #fff; border: none;
+    padding: 14px 40px; font-family: var(--font-stack);
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 2.5px; cursor: pointer; transition: background 0.2s;
+  }
+  .btn:hover { background: var(--charcoal-dark); }
+  .btn:disabled { background: var(--border-mid); cursor: not-allowed; }
+
+  .submit-section { margin-top: 2rem; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .submit-note { font-size: 11px; color: var(--muted); }
+
+  /* ── RESULTS CARD ── */
+  .results-card { background: var(--charcoal); padding: 2.5rem; margin-bottom: 1.5rem; }
+  .results-card .r-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .results-card .r-score { font-size: 48px; font-weight: 700; color: #fff; line-height: 1; }
+  .results-card .r-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; }
+  .results-card .r-message { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.12); line-height: 1.6; }
+  .email-status { margin-top: 1.25rem; font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+  .email-status.sent { color: rgba(180,240,200,0.8); }
+  .email-status.error { color: rgba(255,180,160,0.8); }
+  .email-status.waiting { color: rgba(245,176,65,0.9); }
+
+  .results-card .home-cta {
+    margin-top: 1.75rem; padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.12); text-align: center;
+  }
+  .results-card .home-cta .btn-home {
+    display: inline-block; background: #fff; color: var(--charcoal);
+    border: none; padding: 14px 32px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2.5px;
+    text-decoration: none; font-family: var(--font-stack);
+    transition: background 0.15s; cursor: pointer;
+  }
+  .results-card .home-cta .btn-home:hover { background: var(--accent-bg); }
+
+  .footer { text-align: center; padding: 2rem 0 0; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #bbb; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo"></div>
+    <span class="topbar-name">United Consulting™</span>
+  </div>
+  <div class="topbar-right" id="topbarRight" style="visibility:hidden;">
+    <div class="topbar-timer" id="timerWrap">
+      <span class="timer-label">Tijd</span>
+      <span class="timer-value" id="timerValue">10:00</span>
+    </div>
+    <div class="topbar-progress">
+      <span class="progress-label">Voortgang</span>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <span class="progress-count" id="progressCount">0 / 26</span>
+    </div>
+  </div>
+</div>
+
+<div class="online-warning" id="onlineWarning">
+  ⚠ Je bent terug online. Schakel je WiFi opnieuw uit. <span style="opacity:0.85;font-weight:400;">(Dit moment wordt gelogd voor de recruiter.)</span>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ════════════════ SCREEN 1: WELCOME ════════════════ -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome-card">
+      <div class="tag">United Business Support</div>
+      <h1>Test<br><strong>Eerste Gesprek</strong></h1>
+      <p>Welkom bij de instaptest voor kandidaat-consultants bij United Business Support.<br>
+      Deze test bestaat uit <strong>3 delen</strong>: 15 voorkeur-vragen, 10 kennisvragen en 1 open vraag (mail schrijven).<br>
+      Er zijn geen goede of foute antwoorden op deel 1 — antwoord spontaan.<br>
+      Voor deel 2 telt elk correct antwoord voor 1 punt.<br><br>
+      Je hebt <strong>10 minuten</strong> tijd vanaf het moment dat je start. Wanneer de tijd op is, wordt je test automatisch ingediend met de antwoorden die je al gegeven hebt.<br><br>
+      <strong>Schakel je WiFi uit voor je start.</strong> De test werkt volledig offline — je resultaat wordt automatisch verstuurd zodra je terug online komt.</p>
+      <div class="welcome-meta">
+        <div class="welcome-meta-item"><div class="val">26</div><div class="lbl">Vragen</div></div>
+        <div class="welcome-meta-item"><div class="val">10</div><div class="lbl">Minuten tijd</div></div>
+        <div class="welcome-meta-item"><div class="val">3</div><div class="lbl">Delen</div></div>
+      </div>
+    </div>
+
+    <div class="start-card">
+      <label for="candidateName">Vul je naam in om te starten</label>
+      <input type="text" id="candidateName" placeholder="Voor- en achternaam" autocomplete="name">
+      <div class="start-actions">
+        <span class="start-error" id="nameError">Vul je voor- en achternaam in.</span>
+        <button type="button" class="btn" id="startBtn" onclick="startTest()">Start de test</button>
+      </div>
+    </div>
+
+    <div class="conn-pill" id="connPill">
+      <span class="conn-dot"></span>
+      <span class="conn-text">Je bent <strong>online</strong> — schakel WiFi uit om te starten</span>
+    </div>
+  </div>
+
+  <!-- ════════════════ SCREEN 2: TEST ════════════════ -->
+  <div class="screen" id="screen-test">
+    <form id="testForm">
+
+      <!-- DEEL 1: Voorkeur-vragen (A/B) -->
+      <div class="section-header">
+        <h2>Deel 1 · Voorkeuren</h2>
+        <p>Kies bij elke vraag de uitspraak die het best bij jou past, ook als je je in beide enigszins herkent. Er zijn geen goede of foute antwoorden.</p>
+      </div>
+
+      <div class="question-card" id="qcard-p1"><div class="question-header"><span class="q-num">01</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p1" data-v="A"><span class="option-key">A</span><span class="option-text">Ik krijg voldoening als administratie tot in de puntjes klopt.</span></label>
+          <label class="option pref-option" data-p="p1" data-v="B"><span class="option-key">B</span><span class="option-text">Ik krijg energie van het telefonisch contact met klanten.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p2"><div class="question-header"><span class="q-num">02</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p2" data-v="A"><span class="option-key">A</span><span class="option-text">Ik vind het belangrijk om snel te schakelen tussen verschillende taken.</span></label>
+          <label class="option pref-option" data-p="p2" data-v="B"><span class="option-key">B</span><span class="option-text">Ik werk liever taak per taak af volgens een vaste planning.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p3"><div class="question-header"><span class="q-num">03</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p3" data-v="A"><span class="option-key">A</span><span class="option-text">Ik vind het belangrijk dat een klant zich gehoord voelt, ook al duurt het gesprek dan wat langer.</span></label>
+          <label class="option pref-option" data-p="p3" data-v="B"><span class="option-key">B</span><span class="option-text">Ik hou klantgesprekken liever kort en efficiënt zodat ik snel kan doorgaan naar de volgende taak.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p4"><div class="question-header"><span class="q-num">04</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p4" data-v="A"><span class="option-key">A</span><span class="option-text">Als ik iets niet zeker weet, zoek ik het zelf eerst uit.</span></label>
+          <label class="option pref-option" data-p="p4" data-v="B"><span class="option-key">B</span><span class="option-text">Ik vraag liever meteen hulp zodat ik geen tijd verlies.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p5"><div class="question-header"><span class="q-num">05</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p5" data-v="A"><span class="option-key">A</span><span class="option-text">Ik blijf meestal rustig, ook wanneer klanten ongeduldig zijn.</span></label>
+          <label class="option pref-option" data-p="p5" data-v="B"><span class="option-key">B</span><span class="option-text">Ik ben vooral gericht op het vinden van een oplossing, ook als dat betekent dat ik wat directer moet zijn.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p6"><div class="question-header"><span class="q-num">06</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p6" data-v="A"><span class="option-key">A</span><span class="option-text">Ik geef de voorkeur aan een duidelijke dagplanning met vaste taken.</span></label>
+          <label class="option pref-option" data-p="p6" data-v="B"><span class="option-key">B</span><span class="option-text">Ik vind het niet erg als mijn dag onvoorspelbaar verloopt.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p7"><div class="question-header"><span class="q-num">07</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p7" data-v="A"><span class="option-key">A</span><span class="option-text">Ik voel me comfortabel om iemand te bellen zonder veel achtergrondinformatie.</span></label>
+          <label class="option pref-option" data-p="p7" data-v="B"><span class="option-key">B</span><span class="option-text">Ik bereid telefoongesprekken graag grondig voor.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p8"><div class="question-header"><span class="q-num">08</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p8" data-v="A"><span class="option-key">A</span><span class="option-text">Ik werk graag zelfstandig en neem initiatief als ik zie dat iets beter kan.</span></label>
+          <label class="option pref-option" data-p="p8" data-v="B"><span class="option-key">B</span><span class="option-text">Ik overleg liever regelmatig met collega's voor ik beslissingen neem.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p9"><div class="question-header"><span class="q-num">09</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p9" data-v="A"><span class="option-key">A</span><span class="option-text">Als ik meerdere dringende taken tegelijk heb, stel ik prioriteiten en werk ik ze stap voor stap af.</span></label>
+          <label class="option pref-option" data-p="p9" data-v="B"><span class="option-key">B</span><span class="option-text">Ik probeer alles zo snel mogelijk op te lossen, ook als dat soms chaotisch voelt.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p10"><div class="question-header"><span class="q-num">10</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p10" data-v="A"><span class="option-key">A</span><span class="option-text">Ik werk graag aan rapporten of data-analyses waar ik me volledig op kan focussen.</span></label>
+          <label class="option pref-option" data-p="p10" data-v="B"><span class="option-key">B</span><span class="option-text">Ik haal meer voldoening uit klantenvragen waarbij ik echt iets kan betekenen.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p11"><div class="question-header"><span class="q-num">11</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p11" data-v="A"><span class="option-key">A</span><span class="option-text">Ik krijg energie van het samenwerken in een team.</span></label>
+          <label class="option pref-option" data-p="p11" data-v="B"><span class="option-key">B</span><span class="option-text">Ik werk het liefst zelfstandig zonder veel overleg.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p12"><div class="question-header"><span class="q-num">12</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p12" data-v="A"><span class="option-key">A</span><span class="option-text">Ik geef de voorkeur aan klantvriendelijkheid, ook als ik extra moet uitzoeken of terugbellen.</span></label>
+          <label class="option pref-option" data-p="p12" data-v="B"><span class="option-key">B</span><span class="option-text">Ik kies liever voor een snelle oplossing zodat de klant niet hoeft te wachten.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p13"><div class="question-header"><span class="q-num">13</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p13" data-v="A"><span class="option-key">A</span><span class="option-text">Ik krijg energie van een werkomgeving waarin de verwachtingen per klant kunnen verschillen.</span></label>
+          <label class="option pref-option" data-p="p13" data-v="B"><span class="option-key">B</span><span class="option-text">Ik werk het liefst volgens één vaste methode die ik bij elke klant kan toepassen.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p14"><div class="question-header"><span class="q-num">14</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p14" data-v="A"><span class="option-key">A</span><span class="option-text">Als mijn planning overhoop wordt gehaald door een klantvraag, blijf ik rustig en herschik ik mijn werk.</span></label>
+          <label class="option pref-option" data-p="p14" data-v="B"><span class="option-key">B</span><span class="option-text">Ik vind het lastig als ik plots taken moet verschuiven, dat geeft me onrust.</span></label>
+        </div>
+      </div>
+      <div class="question-card" id="qcard-p15"><div class="question-header"><span class="q-num">15</span><span class="q-text">Wat past het best bij jou?</span></div>
+        <div class="pref-list">
+          <label class="option pref-option" data-p="p15" data-v="A"><span class="option-key">A</span><span class="option-text">Ik vind het leuk om telkens met nieuwe mensen samen te werken bij verschillende klanten.</span></label>
+          <label class="option pref-option" data-p="p15" data-v="B"><span class="option-key">B</span><span class="option-text">Ik werk liever met een vast team in een stabiele omgeving.</span></label>
+        </div>
+      </div>
+
+      <!-- DEEL 2: Kennisvragen (MCQ) -->
+      <div class="section-header">
+        <h2>Deel 2 · Kennisvragen</h2>
+        <p>Lees onderstaande vragen aandachtig en duid het correcte antwoord aan. Elk correct antwoord telt voor 1 punt.</p>
+      </div>
+
+      <div class="question-card" id="qcard-k1"><div class="question-header"><span class="q-num">16</span><span class="q-text">Kostenberekening — Een maandbudget van €12.000 wordt als volgt verdeeld: 40% naar personeel, 30% naar huur, en de rest naar overige kosten. Hoeveel gaat naar overige kosten?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k1" data-v="A"><span class="option-key">A</span><span class="option-text">€3.600</span></label>
+          <label class="option" data-k="k1" data-v="B"><span class="option-key">B</span><span class="option-text">€4.800</span></label>
+          <label class="option" data-k="k1" data-v="C"><span class="option-key">C</span><span class="option-text">€3.000</span></label>
+          <label class="option" data-k="k1" data-v="D"><span class="option-key">D</span><span class="option-text">€2.400</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k2"><div class="question-header"><span class="q-num">17</span><span class="q-text">Reistijdberekening — Een werknemer reist 35 km naar kantoor met een gemiddelde snelheid van 70 km/u. Hoe lang duurt de reis?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k2" data-v="A"><span class="option-key">A</span><span class="option-text">20 minuten</span></label>
+          <label class="option" data-k="k2" data-v="B"><span class="option-key">B</span><span class="option-text">30 minuten</span></label>
+          <label class="option" data-k="k2" data-v="C"><span class="option-key">C</span><span class="option-text">45 minuten</span></label>
+          <label class="option" data-k="k2" data-v="D"><span class="option-key">D</span><span class="option-text">60 minuten</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k3"><div class="question-header"><span class="q-num">18</span><span class="q-text">Getallenreeks — Vul de reeks aan met het juiste getal: 100, 95, 90, 88, 83, ...</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k3" data-v="A"><span class="option-key">A</span><span class="option-text">78</span></label>
+          <label class="option" data-k="k3" data-v="B"><span class="option-key">B</span><span class="option-text">80</span></label>
+          <label class="option" data-k="k3" data-v="C"><span class="option-key">C</span><span class="option-text">85</span></label>
+          <label class="option" data-k="k3" data-v="D"><span class="option-key">D</span><span class="option-text">81</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k4"><div class="question-header"><span class="q-num">19</span><span class="q-text">Getallenreeks — Gegeven zijn de getallen 381 en 749. Bepaal per getal het product van de cijfers en de som van de cijfers. Tel elk bekomen getal bij elkaar op. Welk getal levert de hoogste uitkomst?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k4" data-v="A"><span class="option-key">A</span><span class="option-text">Het getal 749</span></label>
+          <label class="option" data-k="k4" data-v="B"><span class="option-key">B</span><span class="option-text">Het getal 381</span></label>
+          <label class="option" data-k="k4" data-v="C"><span class="option-key">C</span><span class="option-text">Beide getallen geven een even hoge uitkomst</span></label>
+          <label class="option" data-k="k4" data-v="D"><span class="option-key">D</span><span class="option-text">Geen van de bovenstaande antwoorden voldoet</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k5"><div class="question-header"><span class="q-num">20</span><span class="q-text">Logisch redeneren — Het is dinsdagochtend, je start om 9u met werken en je krijgt volgende taken:
+
+A. Vergadering om 10u (duurtijd 1u)
+B. Klacht van klant behandelen (dringend)
+C. Post ophalen voor 11u
+D. Rapport afwerken (deadline: morgen)
+
+Wat is de meest logische volgorde?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k5" data-v="A"><span class="option-key">A</span><span class="option-text">Klacht – Post – Vergadering – Rapport</span></label>
+          <label class="option" data-k="k5" data-v="B"><span class="option-key">B</span><span class="option-text">Rapport – Vergadering – Klacht – Post</span></label>
+          <label class="option" data-k="k5" data-v="C"><span class="option-key">C</span><span class="option-text">Vergadering – Post – Klacht – Rapport</span></label>
+          <label class="option" data-k="k5" data-v="D"><span class="option-key">D</span><span class="option-text">Klacht – Vergadering – Post – Rapport</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k6"><div class="question-header"><span class="q-num">21</span><span class="q-text">Getallenreeks — Welke van de volgende patronen is niet logisch?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k6" data-v="A"><span class="option-key">A</span><span class="option-text">1, 4, 9, 16, ___</span></label>
+          <label class="option" data-k="k6" data-v="B"><span class="option-key">B</span><span class="option-text">1, 2, 4, 8, ___</span></label>
+          <label class="option" data-k="k6" data-v="C"><span class="option-key">C</span><span class="option-text">1, 3, 6, 10, ___</span></label>
+          <label class="option" data-k="k6" data-v="D"><span class="option-key">D</span><span class="option-text">1, 3, 6, 9, ___</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k7"><div class="question-header"><span class="q-num">22</span><span class="q-text">Berekening — Een klant bestelt 3 toners van €42,50 per stuk. Hij krijgt 10% korting. Wat is het eindbedrag (excl. btw)?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k7" data-v="A"><span class="option-key">A</span><span class="option-text">€127,50</span></label>
+          <label class="option" data-k="k7" data-v="B"><span class="option-key">B</span><span class="option-text">€114,75</span></label>
+          <label class="option" data-k="k7" data-v="C"><span class="option-key">C</span><span class="option-text">€115,50</span></label>
+          <label class="option" data-k="k7" data-v="D"><span class="option-key">D</span><span class="option-text">€119,75</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k8"><div class="question-header"><span class="q-num">23</span><span class="q-text">Welke zin is correct?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k8" data-v="A"><span class="option-key">A</span><span class="option-text">Zodra de leverancier bevestigd heeft dat de goederen onderweg zijn, brengen wij u meteen op de hoogte.</span></label>
+          <label class="option" data-k="k8" data-v="B"><span class="option-key">B</span><span class="option-text">Zodra de leverancier bevestigt heeft dat de goederen onderweg zijn, brengen wij u meteen op de hoogte.</span></label>
+          <label class="option" data-k="k8" data-v="C"><span class="option-key">C</span><span class="option-text">Zodra de leverancier bevestigt heeft dat de goederen onderweg zijn brengen wij u meteen op de hoogte.</span></label>
+          <label class="option" data-k="k8" data-v="D"><span class="option-key">D</span><span class="option-text">Zodra de leverancier bevestigd heeft dat de goederen onderweg zijn brengen wij u meteen op de hoogte.</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k9"><div class="question-header"><span class="q-num">24</span><span class="q-text">Welke zin is correct?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k9" data-v="A"><span class="option-key">A</span><span class="option-text">De klant verwacht dat jij jouw belofte nakomt en de gegevens vandaag nog verstuurd.</span></label>
+          <label class="option" data-k="k9" data-v="B"><span class="option-key">B</span><span class="option-text">De klant verwacht dat jij jou belofte nakomt en de gegevens vandaag nog verstuurt.</span></label>
+          <label class="option" data-k="k9" data-v="C"><span class="option-key">C</span><span class="option-text">De klant verwacht dat jij jouw belofte nakomt en de gegevens vandaag nog verstuurt.</span></label>
+          <label class="option" data-k="k9" data-v="D"><span class="option-key">D</span><span class="option-text">De klant verwacht dat jij jouw belofte nakomt en de gegevens vandaag nog verstuurdt.</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-k10"><div class="question-header"><span class="q-num">25</span><span class="q-text">Welke zin is correct?</span></div>
+        <div class="options-list">
+          <label class="option" data-k="k10" data-v="A"><span class="option-key">A</span><span class="option-text">De consultants dienen uiterlijk voor het eind van de maand een gedetailleerd rapport te bezorgen.</span></label>
+          <label class="option" data-k="k10" data-v="B"><span class="option-key">B</span><span class="option-text">De consultants dienen uiterlijk voor het einde van de maand een gedetailleerde rapport te bezorgen.</span></label>
+          <label class="option" data-k="k10" data-v="C"><span class="option-key">C</span><span class="option-text">De consultants dienen uiterlijk voor het eind van de maand een gedetailleerde rapport te bezorgen.</span></label>
+          <label class="option" data-k="k10" data-v="D"><span class="option-key">D</span><span class="option-text">De consultants dienen uiterlijk voor het einde van de maand een gedetailleerd rapport te bezorgen.</span></label>
+        </div>
+      </div>
+
+      <!-- DEEL 3: Open vraag (mail schrijven) -->
+      <div class="section-header">
+        <h2>Deel 3 · E-mail opstellen</h2>
+        <p>Schrijf een e-mail als antwoord op de klant.<br><br>
+        Het is vandaag 8 juli. Een klant uit Frankrijk heeft op 28 juni drie producten besteld. De klant heeft tot op vandaag nog niets ontvangen.<br>
+        De klant heeft contact opgenomen met de klantendienst. Hij is erg ontevreden omdat hij morgen op vakantie vertrekt.<br><br>
+        Na intern onderzoek blijkt:<br>
+        · Het pakket is op 1 juli verzonden.<br>
+        · Het pakket is vermoedelijk naar een verkeerd adres gestuurd (oude adresgegevens).<br>
+        · Eén product is niet meer op voorraad.</p>
+      </div>
+
+      <div class="question-card" id="qcard-e1"><div class="question-header"><span class="q-num">26</span><span class="q-text">Jouw antwoord aan de klant:</span></div>
+        <div class="answer-area">
+          <textarea id="emailAnswer" placeholder="Schrijf hier je e-mail..."></textarea>
+          <div class="char-count" id="charCount">0 tekens</div>
+        </div>
+      </div>
+
+      <div class="submit-section">
+        <span class="submit-note" id="submitNote">Beantwoord alle vragen om in te dienen.</span>
+        <button type="button" class="btn" id="submitBtn" disabled onclick="submitTest()">Resultaat indienen</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ════════════════ SCREEN 3: RESULTS ════════════════ -->
+  <div class="screen" id="screen-results">
+    <div class="results-card">
+      <div class="r-label">Test voltooid</div>
+      <div class="r-score" id="rScore">—</div>
+      <div class="r-sub" id="rSub"></div>
+      <div class="r-message" id="rMessage"></div>
+      <div class="email-status" id="emailStatus"></div>
+      <div class="home-cta">
+        <a href="index.html" class="btn-home">← Terug naar startpagina</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">United Consulting™ &nbsp;·&nbsp; www.unitedconsulting.be</div>
+</div>
+
+<script>
+  // ════════════════ CONFIG ════════════════
+  const API_ENDPOINT = 'https://europe-west1-uc-hr-test-sollicitanten.cloudfunctions.net/hr-tests-mailer';
+  const TEST_NAME = 'United Business Support';
+  const PENDING_KEY = 'united-bs-pending';
+  const TIME_LIMIT_SECONDS = 10 * 60;
+  const WARNING_AT = 2 * 60;
+  const CRITICAL_AT = 30;
+
+  // Deel 2 correcte antwoorden — worden gebruikt voor automatische scoring
+  const CORRECT = {
+    k1: 'A', // €3.600 = 12000 - 40% - 30% = 30% = 3600
+    k2: 'B', // 30 min = 35km / 70km/u
+    k3: 'A', // 78 (pattern: -5,-5,-2 cyclus)
+    k4: 'A', // 749: 7*4*9=252 + 7+4+9=20 = 272 > 381: 3*8*1=24 + 3+8+1=12 = 36
+    k5: 'A', // Klacht (urgent) → Post (voor 11u) → Vergadering (10u) → Rapport
+    k6: 'D', // 1,3,6,9 volgt geen consistent patroon
+    k7: 'B', // 3 × 42,50 × 0,90 = €114,75
+    k8: 'A', // "bevestigd heeft" + komma na bijzin
+    k9: 'C', // jouw belofte + verstuurt (jij + t-vorm)
+    k10: 'D' // einde + gedetailleerd (het rapport onbepaald → geen -e)
+  };
+
+  const PREF_QUESTIONS = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','p14','p15'];
+  const KNOWLEDGE_QUESTIONS = ['k1','k2','k3','k4','k5','k6','k7','k8','k9','k10'];
+  const TOTAL_KNOWLEDGE = KNOWLEDGE_QUESTIONS.length;
+  const TOTAL_ITEMS = PREF_QUESTIONS.length + KNOWLEDGE_QUESTIONS.length + 1; // +1 = email
+  const MIN_EMAIL_CHARS = 50;
+
+  const answers = {}; // { p1: 'A', k1: 'A', email: '...' }
+  let candidateName = '';
+  let timerInterval = null;
+  let timeLeft = TIME_LIMIT_SECONDS;
+  let testSubmitted = false;
+  let testStartTs = null;
+  const visibilityEvents = [];
+  const onlineEvents = [];
+  let sendInFlight = false;
+
+  // ════════════════ SERVICE WORKER ════════════════
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW registratie faalde:', err));
+    });
+  }
+
+  // ════════════════ CONNECTIVITY ════════════════
+  function updateConnStatus() {
+    const pill = document.getElementById('connPill');
+    if (!pill) return;
+    const text = pill.querySelector('.conn-text');
+    if (navigator.onLine) {
+      pill.classList.remove('offline');
+      text.innerHTML = 'Je bent <strong>online</strong> — schakel WiFi uit om te starten';
+    } else {
+      pill.classList.add('offline');
+      text.innerHTML = 'Je bent <strong>offline</strong> — klaar om te starten';
+    }
+  }
+  window.addEventListener('online', () => {
+    updateConnStatus();
+    retryPending();
+    if (testStartTs && !testSubmitted) {
+      onlineEvents.push({ type: 'online', at: Date.now() });
+      const w = document.getElementById('onlineWarning');
+      if (w) w.classList.add('show');
+    }
+  });
+  window.addEventListener('offline', () => {
+    updateConnStatus();
+    if (testStartTs && !testSubmitted) {
+      onlineEvents.push({ type: 'offline', at: Date.now() });
+      const w = document.getElementById('onlineWarning');
+      if (w) w.classList.remove('show');
+    }
+  });
+
+  function summarizeOnlineDuringTest() {
+    if (!testStartTs) return { count: 0, sec: 0 };
+    let ms = 0, start = null;
+    for (const e of onlineEvents) {
+      if (e.type === 'online' && start === null) start = e.at;
+      else if (e.type === 'offline' && start !== null) { ms += e.at - start; start = null; }
+    }
+    if (start !== null) ms += Date.now() - start;
+    return { count: onlineEvents.filter(e => e.type === 'online').length, sec: Math.round(ms / 1000) };
+  }
+
+  // ════════════════ VISIBILITY TRACKING ════════════════
+  function logVis(type) {
+    if (!testStartTs || testSubmitted) return;
+    visibilityEvents.push({ type, at: Date.now() });
+  }
+  document.addEventListener('visibilitychange', () => logVis(document.hidden ? 'hidden' : 'visible'));
+  window.addEventListener('blur', () => logVis('blur'));
+  window.addEventListener('focus', () => logVis('focus'));
+
+  function summarizeVisibility() {
+    if (!testStartTs) return null;
+    const away = visibilityEvents.filter(e => e.type === 'hidden' || e.type === 'blur');
+    if (away.length === 0) return { awayCount: 0, awayMs: 0, awaySec: 0, clean: true };
+    let ms = 0, start = null;
+    for (const e of visibilityEvents) {
+      if ((e.type === 'hidden' || e.type === 'blur') && start === null) start = e.at;
+      else if ((e.type === 'visible' || e.type === 'focus') && start !== null) { ms += e.at - start; start = null; }
+    }
+    if (start !== null) ms += Date.now() - start;
+    return { awayCount: away.length, awayMs: ms, awaySec: Math.round(ms / 1000), clean: false };
+  }
+
+  // ════════════════ NAVIGATION / START ════════════════
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startTest() {
+    const input = document.getElementById('candidateName');
+    const name = input.value.trim();
+    const err = document.getElementById('nameError');
+    if (name.length < 2 || !name.includes(' ')) {
+      err.textContent = 'Vul je voor- en achternaam in.';
+      err.classList.add('show');
+      input.focus();
+      return;
+    }
+    if (navigator.onLine) {
+      err.textContent = 'Schakel je WiFi uit voor je de test start.';
+      err.classList.add('show');
+      return;
+    }
+    err.classList.remove('show');
+    candidateName = name;
+    sessionStorage.setItem('hr-candidate-name', name);
+    testStartTs = Date.now();
+    document.getElementById('topbarRight').style.visibility = 'visible';
+    showScreen('test');
+    startTimer();
+  }
+
+  // ════════════════ TIMER ════════════════
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+  function startTimer() {
+    timeLeft = TIME_LIMIT_SECONDS;
+    renderTimer();
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      renderTimer();
+      if (timeLeft <= 0) { stopTimer(); autoSubmit(); }
+    }, 1000);
+  }
+  function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+  function renderTimer() {
+    const wrap = document.getElementById('timerWrap');
+    const val = document.getElementById('timerValue');
+    val.textContent = formatTime(Math.max(0, timeLeft));
+    wrap.classList.toggle('warning', timeLeft <= WARNING_AT && timeLeft > CRITICAL_AT);
+    wrap.classList.toggle('critical', timeLeft <= CRITICAL_AT);
+  }
+  function autoSubmit() {
+    if (testSubmitted) return;
+    const form = document.getElementById('testForm');
+    const banner = document.createElement('div');
+    banner.className = 'timeup-banner';
+    banner.textContent = 'Tijd is om — je antwoorden worden automatisch ingediend';
+    form.insertBefore(banner, form.firstChild);
+    submitTest(true);
+  }
+
+  // ════════════════ ANSWER TRACKING ════════════════
+  // Preference (Deel 1)
+  document.querySelectorAll('label.option[data-p]').forEach(lbl => {
+    lbl.addEventListener('click', (e) => {
+      e.preventDefault();
+      const key = lbl.dataset.p;
+      const val = lbl.dataset.v;
+      answers[key] = val;
+      document.querySelectorAll(`label.option[data-p="${key}"]`).forEach(o => o.classList.remove('selected'));
+      lbl.classList.add('selected');
+      document.getElementById('qcard-' + key).classList.add('answered');
+      updateProgress();
+    });
+  });
+  // Knowledge (Deel 2)
+  document.querySelectorAll('label.option[data-k]').forEach(lbl => {
+    lbl.addEventListener('click', (e) => {
+      e.preventDefault();
+      const key = lbl.dataset.k;
+      const val = lbl.dataset.v;
+      answers[key] = val;
+      document.querySelectorAll(`label.option[data-k="${key}"]`).forEach(o => o.classList.remove('selected'));
+      lbl.classList.add('selected');
+      document.getElementById('qcard-' + key).classList.add('answered');
+      updateProgress();
+    });
+  });
+  // Email (Deel 3)
+  const emailArea = document.getElementById('emailAnswer');
+  const charCount = document.getElementById('charCount');
+  emailArea.addEventListener('input', () => {
+    const text = emailArea.value.trim();
+    answers.email = text;
+    charCount.textContent = text.length + ' tekens';
+    const card = document.getElementById('qcard-e1');
+    if (text.length >= MIN_EMAIL_CHARS) card.classList.add('answered');
+    else card.classList.remove('answered');
+    updateProgress();
+  });
+
+  function countAnswered() {
+    let c = 0;
+    PREF_QUESTIONS.forEach(k => { if (answers[k]) c++; });
+    KNOWLEDGE_QUESTIONS.forEach(k => { if (answers[k]) c++; });
+    if ((answers.email || '').length >= MIN_EMAIL_CHARS) c++;
+    return c;
+  }
+
+  function updateProgress() {
+    const n = countAnswered();
+    document.getElementById('progressFill').style.width = (n / TOTAL_ITEMS * 100) + '%';
+    document.getElementById('progressCount').textContent = n + ' / ' + TOTAL_ITEMS;
+    const btn = document.getElementById('submitBtn');
+    const note = document.getElementById('submitNote');
+    if (n === TOTAL_ITEMS) {
+      btn.disabled = false;
+      note.textContent = 'Alle vragen beantwoord. Klaar om in te dienen.';
+    } else {
+      btn.disabled = true;
+      note.textContent = `Nog ${TOTAL_ITEMS - n} vraag/vragen te beantwoorden (mail min. ${MIN_EMAIL_CHARS} tekens).`;
+    }
+  }
+
+  // ════════════════ SUBMIT ════════════════
+  function submitTest(autoSubmitted) {
+    if (testSubmitted) return;
+    testSubmitted = true;
+    stopTimer();
+
+    // Score Deel 2
+    let score = 0;
+    const knowledgeDetail = KNOWLEDGE_QUESTIONS.map(k => {
+      const selected = answers[k] || null;
+      const isCorrect = selected === CORRECT[k];
+      if (isCorrect) score++;
+      return { key: k, selected, correct: CORRECT[k], isCorrect };
+    });
+    const pct = Math.round((score / TOTAL_KNOWLEDGE) * 100);
+
+    document.getElementById('rScore').textContent = score + ' / ' + TOTAL_KNOWLEDGE;
+    document.getElementById('rSub').textContent = pct + '% correct (Deel 2 – Kennisvragen)';
+    let msg = '';
+    if (pct >= 80) msg = `Uitstekend resultaat, ${candidateName}! Je behaalde ${score} op ${TOTAL_KNOWLEDGE} voor de kennisvragen — een sterke prestatie.`;
+    else if (pct >= 60) msg = `Goed resultaat, ${candidateName}. Je behaalde ${score} op ${TOTAL_KNOWLEDGE} voor de kennisvragen. Er is nog ruimte voor verdieping op enkele topics.`;
+    else msg = `Bedankt voor het invullen, ${candidateName}. Je behaalde ${score} op ${TOTAL_KNOWLEDGE} voor de kennisvragen. We nemen zeker contact met je op om je resultaten verder te bespreken.`;
+    document.getElementById('rMessage').textContent = msg;
+
+    showScreen('results');
+
+    const timeUsed = TIME_LIMIT_SECONDS - Math.max(0, timeLeft);
+    const payload = buildPayload(score, pct, knowledgeDetail, {
+      autoSubmitted: !!autoSubmitted,
+      timeUsedSeconds: timeUsed,
+      vis: summarizeVisibility(),
+      online: summarizeOnlineDuringTest()
+    });
+    localStorage.setItem(PENDING_KEY, JSON.stringify(payload));
+    attemptSend();
+  }
+
+  function generateSubmissionId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID().replace(/-/g, '');
+    }
+    return 'sid_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 14);
+  }
+
+  function buildPayload(score, pct, knowledgeDetail, meta) {
+    const date = new Date().toLocaleString('nl-BE', { dateStyle: 'short', timeStyle: 'short' });
+    const subject = `${TEST_NAME} – ${candidateName}`;
+    const timeUsedStr = formatTime(meta.timeUsedSeconds) + ' / ' + formatTime(TIME_LIMIT_SECONDS);
+    const submitMode = meta.autoSubmitted ? 'Automatisch ingediend (tijd verstreken)' : 'Manueel ingediend door kandidaat';
+    const vis = meta.vis;
+    const visText = (vis && !vis.clean) ? `Tab verlaten tijdens test: ${vis.awayCount} keer (totaal ±${vis.awaySec}s) — mogelijke afleiding` : 'Tab verlaten tijdens test: 0 keer (geen gedetecteerde afleiding)';
+    const online = meta.online || { count: 0, sec: 0 };
+    const onlineText = online.count > 0 ? `Online tijdens test: ${online.count} keer (totaal ±${online.sec}s) — mogelijke opzoekingen` : 'Online tijdens test: 0 keer (volledig offline)';
+    const bu = sessionStorage.getItem('hr-candidate-bu') || 'Business Support';
+
+    // Plain text body
+    const lines = [
+      `Kandidaat: ${candidateName}`,
+      `Business Unit: ${bu}`,
+      `Test: ${TEST_NAME}`,
+      `Datum: ${date}`,
+      `Tijd gebruikt: ${timeUsedStr}`,
+      `Inzending: ${submitMode}`,
+      visText, onlineText,
+      `Score Deel 2 (Kennisvragen): ${score} / ${TOTAL_KNOWLEDGE} (${pct}%)`,
+      '',
+      '─────────── DEEL 1: VOORKEUREN ───────────',
+      ''
+    ];
+    PREF_QUESTIONS.forEach((k, i) => {
+      const v = answers[k] || '—';
+      lines.push(`Vraag ${i + 1}: ${v}`);
+    });
+    lines.push('', '─────────── DEEL 2: KENNISVRAGEN ───────────', '');
+    knowledgeDetail.forEach((r, i) => {
+      lines.push(`Vraag ${i + 1}:  gekozen ${r.selected || '—'}  ·  correct ${r.correct}  ·  ${r.isCorrect ? '✓' : '✗'}`);
+    });
+    lines.push('', '─────────── DEEL 3: E-MAIL ───────────', '');
+    lines.push(answers.email || '(geen antwoord ingevuld)');
+    const textBody = lines.join('\n');
+
+    // HTML body
+    const prefRows = PREF_QUESTIONS.map((k, i) => `<tr><td style="padding:6px 10px;font-size:12px;border-bottom:1px dotted #ddd;">Vraag ${i + 1}</td><td style="padding:6px 10px;font-size:12px;font-weight:600;border-bottom:1px dotted #ddd;">${answers[k] || '—'}</td></tr>`).join('');
+    const knowRows = knowledgeDetail.map((r, i) => `<tr><td style="padding:6px 10px;font-size:12px;border-bottom:1px dotted #ddd;">Vraag ${i + 1}</td><td style="padding:6px 10px;font-size:12px;text-align:center;border-bottom:1px dotted #ddd;">${r.selected || '—'}</td><td style="padding:6px 10px;font-size:12px;text-align:center;border-bottom:1px dotted #ddd;">${r.correct}</td><td style="padding:6px 10px;font-size:14px;text-align:center;color:${r.isCorrect ? '#2e7d52' : '#a0341e'};font-weight:700;border-bottom:1px dotted #ddd;">${r.isCorrect ? '✓' : '✗'}</td></tr>`).join('');
+
+    const htmlBody = `
+      <div style="font-family:Arial,sans-serif;color:#424B55;max-width:720px;">
+        <div style="background:#434A55;color:#fff;padding:24px;">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:0.6;">United Consulting™ · HR Selectieprocedure</div>
+          <div style="font-size:20px;font-weight:700;margin-top:8px;">${TEST_NAME} — ${escapeHtml(candidateName)}</div>
+          <div style="font-size:13px;opacity:0.7;margin-top:4px;">${date} &nbsp;·&nbsp; Business Unit: <strong>${escapeHtml(bu)}</strong></div>
+          <div style="font-size:12px;opacity:0.75;margin-top:8px;">Tijd gebruikt: <strong>${timeUsedStr}</strong> &nbsp;·&nbsp; ${submitMode}</div>
+          <div style="margin-top:16px;font-size:30px;font-weight:700;">${score} / ${TOTAL_KNOWLEDGE} <span style="font-size:14px;opacity:0.6;font-weight:400;">(${pct}% Deel 2)</span></div>
+        </div>
+        ${(vis && !vis.clean) ? `<div style="padding:12px 16px;background:#fff8e7;border-left:4px solid #d4a017;font-size:12px;color:#6b5200;"><strong>⚠ Tab verlaten:</strong> kandidaat heeft de tab <strong>${vis.awayCount} keer verlaten</strong> tijdens deze test (totaal ±${vis.awaySec} seconden).</div>` : ''}
+        ${(online.count > 0) ? `<div style="padding:12px 16px;background:#fdecec;border-left:4px solid #a0341e;font-size:12px;color:#6e2616;"><strong>⚠ Online tijdens test:</strong> kandidaat is <strong>${online.count} keer terug online gekomen</strong> tijdens de test (totaal ±${online.sec} seconden).</div>` : ''}
+
+        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:24px 0 12px;">Deel 1 — Voorkeuren</h3>
+        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;">${prefRows}</table>
+
+        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:32px 0 12px;">Deel 2 — Kennisvragen</h3>
+        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;">
+          <thead><tr style="background:#EAEDF2;"><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;text-align:left;">Vraag</th><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Gekozen</th><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Correct</th><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">OK</th></tr></thead>
+          <tbody>${knowRows}</tbody>
+        </table>
+
+        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:32px 0 12px;">Deel 3 — E-mail (open vraag)</h3>
+        <div style="background:#FAFAFA;padding:16px 20px;border-left:3px solid #434A55;font-size:13px;color:#424B55;white-space:pre-wrap;line-height:1.6;">${escapeHtml(answers.email || '(geen antwoord ingevuld)')}</div>
+
+        <div style="margin-top:32px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#bbb;text-align:center;">www.unitedconsulting.be</div>
+      </div>`;
+
+    const structuredMeta = {
+      businessUnit: bu,
+      score, totalQuestions: TOTAL_KNOWLEDGE, percentage: pct,
+      timeUsedSec: meta.timeUsedSeconds, timeLimitSec: TIME_LIMIT_SECONDS,
+      autoSubmitted: !!meta.autoSubmitted,
+      awayCount: vis ? vis.awayCount : 0, awaySec: vis ? vis.awaySec : 0,
+      onlineCount: online.count, onlineSec: online.sec,
+      preferences: PREF_QUESTIONS.reduce((acc, k) => { acc[k] = answers[k] || null; return acc; }, {}),
+      submittedAtClient: new Date().toISOString()
+    };
+
+    return {
+      submissionId: generateSubmissionId(),
+      testName: TEST_NAME,
+      candidateName, subject, textBody, htmlBody,
+      meta: structuredMeta
+    };
+  }
+
+  // ════════════════ SEND / RETRY ════════════════
+  async function attemptSend() {
+    const pending = localStorage.getItem(PENDING_KEY);
+    if (!pending) return;
+    const statusEl = document.getElementById('emailStatus');
+    if (!statusEl) return;
+    if (sendInFlight) return;
+    if (!navigator.onLine) {
+      statusEl.className = 'email-status waiting';
+      statusEl.innerHTML = '⏳ Wachten op internetverbinding — schakel WiFi terug aan om je resultaat te versturen';
+      return;
+    }
+    sendInFlight = true;
+    statusEl.className = 'email-status';
+    statusEl.textContent = 'Resultaten worden verstuurd...';
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: pending
+      });
+      if (!res.ok) throw new Error('Server error ' + res.status);
+      const data = await res.json().catch(() => ({}));
+      localStorage.removeItem(PENDING_KEY);
+      if (data.mailSent) {
+        statusEl.className = 'email-status sent';
+        statusEl.textContent = '✓ Resultaten succesvol verstuurd naar de recruiter.';
+      } else {
+        statusEl.className = 'email-status waiting';
+        statusEl.innerHTML = '✓ Je resultaten zijn opgeslagen. <span style="opacity:0.85;font-weight:400;">De email naar de recruiter wordt later geleverd.</span>';
+      }
+    } catch (err) {
+      statusEl.className = 'email-status error';
+      statusEl.textContent = '⚠ Verzending mislukt. Nieuwe poging over 5 seconden...';
+      setTimeout(attemptSend, 5000);
+    } finally {
+      sendInFlight = false;
+    }
+  }
+
+  function retryPending() { if (localStorage.getItem(PENDING_KEY)) attemptSend(); }
+
+  window.addEventListener('load', () => {
+    updateConnStatus();
+    // Prefill naam vanuit sessionStorage
+    const storedName = sessionStorage.getItem('hr-candidate-name');
+    if (storedName) {
+      const input = document.getElementById('candidateName');
+      if (input) input.value = storedName;
+    }
+    const pending = localStorage.getItem(PENDING_KEY);
+    if (pending) {
+      showScreen('results');
+      const rc = document.querySelector('#screen-results .results-card');
+      if (rc) {
+        rc.innerHTML = `
+          <div class="r-label">Eerder voltooide test</div>
+          <div style="font-size:22px;font-weight:400;color:#fff;line-height:1.4;margin-top:10px;">Je resultaat wacht op verzending</div>
+          <div class="r-message">Je hebt deze test eerder voltooid maar er was toen geen internetverbinding. We proberen het nu automatisch opnieuw zodra je online bent.</div>
+          <div class="email-status" id="emailStatus"></div>
+          <div class="home-cta">
+            <a href="index.html" class="btn-home">← Terug naar startpagina</a>
+          </div>
+        `;
+      }
+      attemptSend();
+    }
+  });
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+</script>
+</body>
+</html>

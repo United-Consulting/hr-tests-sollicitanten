@@ -238,6 +238,7 @@
   .badge.test-hard { background: #e6efe9; color: var(--correct); }
   .badge.test-soft { background: #efe6f0; color: #6b3c70; }
   .badge.test-attitude { background: #fff3e0; color: #b86a00; }
+  .badge.test-bs { background: #e6eef5; color: #3F7BB6; }
   .badge.cat-sterk    { background: #e6efe9; color: #2e7d52; }
   .badge.cat-solide   { background: #e6eef5; color: #3F7BB6; }
   .badge.cat-aandacht { background: #fff3e0; color: #b86a00; }
@@ -390,6 +391,7 @@
       <span class="filter-label">Filter</span>
       <button class="chip active" data-filter="all" onclick="setFilter('all')">Alle</button>
       <button class="chip" data-filter="attitude" onclick="setFilter('attitude')">Startup Attitude</button>
+      <button class="chip" data-filter="bs" onclick="setFilter('bs')">Business Support</button>
       <button class="chip" data-filter="hard" onclick="setFilter('hard')">Hard Skills</button>
       <button class="chip" data-filter="soft" onclick="setFilter('soft')">Soft Skills</button>
       <button class="chip" data-filter="flagged" onclick="setFilter('flagged')">⚠ Met flags</button>
@@ -722,6 +724,7 @@
       if (currentFilter === 'hard' && !/hard/i.test(r.testName)) return false;
       if (currentFilter === 'soft' && !/soft/i.test(r.testName)) return false;
       if (currentFilter === 'attitude' && !/attitude|startup/i.test(r.testName)) return false;
+      if (currentFilter === 'bs' && !/business support/i.test(r.testName)) return false;
       if (currentFilter === 'flagged') {
         const m = r.meta || {};
         if (!(m.awayCount > 0 || m.onlineCount > 0 || m.autoSubmitted)) return false;
@@ -747,9 +750,11 @@
       const date = r.submittedAt ? new Date(r.submittedAt).toLocaleString('nl-BE', { dateStyle: 'short', timeStyle: 'short' }) : '—';
       const isHard = /hard/i.test(r.testName);
       const isAttitude = /attitude|startup/i.test(r.testName);
-      const testBadge = isAttitude
-        ? `<span class="badge test-attitude">Attitude</span>`
-        : `<span class="badge ${isHard ? 'test-hard' : 'test-soft'}">${isHard ? 'Hard' : 'Soft'}</span>`;
+      const isBS = /business support/i.test(r.testName);
+      let testBadge;
+      if (isBS) testBadge = `<span class="badge test-bs">Business Support</span>`;
+      else if (isAttitude) testBadge = `<span class="badge test-attitude">Attitude</span>`;
+      else testBadge = `<span class="badge ${isHard ? 'test-hard' : 'test-soft'}">${isHard ? 'Hard' : 'Soft'}</span>`;
       let score;
       if (m.score === null || m.score === undefined) {
         score = '—';

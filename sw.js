@@ -2,13 +2,14 @@
 // Cache-first strategie: eens geladen, werkt alles offline.
 // Enige uitzondering: POST naar de Cloud Function (die MOET online gaan).
 
-const CACHE_VERSION = 'hr-tests-v15';
+const CACHE_VERSION = 'hr-tests-v16';
 const ASSETS = [
   './',
   './index.html',
   './hard-skills.html',
   './soft-skills.html',
   './startup-attitude.html',
+  './business-support.html',
   './manifest.json'
 ];
 
