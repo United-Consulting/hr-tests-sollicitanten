@@ -52,6 +52,18 @@
   .screen.active { display: block; animation: fadein 0.25s ease; }
   @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+  /* ── HERO PHOTO ── */
+  .hero-photo {
+    width: 100%; height: 260px;
+    object-fit: cover;
+    object-position: center 25%;
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 640px) {
+    .hero-photo { height: 200px; }
+  }
+
   /* ── WELCOME CARD ── */
   .welcome-card {
     background: var(--charcoal);
@@ -305,6 +317,7 @@
 
   <!-- ════════════════ SCHERM 1: NAAM + BU INVOER ════════════════ -->
   <div class="screen active" id="screen-name">
+    <img src="team.jpg" alt="Het United Consulting team" class="hero-photo">
     <div class="welcome-card">
       <div class="tag">United Consulting</div>
       <h1><strong>Selectieprocedure</strong></h1>
@@ -336,6 +349,7 @@
 
   <!-- ════════════════ SCHERM 2: TEST KEUZE ════════════════ -->
   <div class="screen" id="screen-picker">
+    <img src="team.jpg" alt="Het United Consulting team" class="hero-photo">
     <div class="welcome-card">
       <div class="tag">Welkom</div>
       <h1>Hallo,<br><strong id="pickerName">kandidaat</strong></h1>
