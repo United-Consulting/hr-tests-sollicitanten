@@ -34,13 +34,13 @@
   .topbar {
     background: var(--charcoal);
     padding: 0 2.5rem;
-    height: 96px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   .topbar-brand { display: flex; align-items: center; gap: 12px; }
-  .topbar-logo { height: 72px; width: auto; display: block; }
+  .topbar-logo { height: 56px; width: auto; display: block; }
   .topbar-name {
     font-size: 11px; font-weight: 700; text-transform: uppercase;
     letter-spacing: 3px; color: #fff;
@@ -317,13 +317,14 @@
 
   <!-- ════════════════ SCHERM 1: NAAM + BU INVOER ════════════════ -->
   <div class="screen active" id="screen-name">
-    <img src="team.jpg" alt="Het United Consulting team" class="hero-photo">
     <div class="welcome-card">
       <div class="tag">United Consulting</div>
       <h1><strong>Selectieprocedure</strong></h1>
       <p>Welkom bij de selectieprocedure van United Consulting.<br>
       Vul hieronder je gegevens in om verder te gaan. Je recruiter heeft aangegeven welke test(s) je vandaag moet afleggen.</p>
     </div>
+
+    <img src="team.jpg" alt="Het United Consulting team" class="hero-photo">
 
     <div class="start-card">
       <label for="candidateName">Naam kandidaat</label>
@@ -349,7 +350,6 @@
 
   <!-- ════════════════ SCHERM 2: TEST KEUZE ════════════════ -->
   <div class="screen" id="screen-picker">
-    <img src="team.jpg" alt="Het United Consulting team" class="hero-photo">
     <div class="welcome-card">
       <div class="tag">Welkom</div>
       <h1>Hallo,<br><strong id="pickerName">kandidaat</strong></h1>
@@ -357,6 +357,8 @@
       Je krijgt op de volgende pagina de instructies en kan daar de test starten.</p>
       <div class="picker-bu-pill" id="pickerBuPill" style="display:none;">Business Unit: <span id="pickerBu"></span></div>
     </div>
+
+    <img src="team.jpg" alt="Het United Consulting team" class="hero-photo">
 
     <a href="startup-attitude.html" class="featured-test">
       <div class="featured-label">United Consulting</div>
