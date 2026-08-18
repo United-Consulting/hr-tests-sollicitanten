@@ -858,7 +858,16 @@
       const selectedVal = selected ? selected.value : null;
       const isCorrect = selectedVal === correct;
       if (isCorrect) score++;
-      results.push({ q: i, question: QUESTIONS[key], selected: selectedVal, correct, isCorrect });
+      // Extract option-teksten uit de DOM zodat de recruiter niet enkel letters ziet
+      const options = {};
+      ['A','B','C','D','E'].forEach(letter => {
+        const el = document.getElementById('opt-' + i + '-' + letter);
+        if (el) {
+          const tEl = el.querySelector('.option-text');
+          if (tEl) options[letter] = tEl.textContent.trim();
+        }
+      });
+      results.push({ q: i, question: QUESTIONS[key], selected: selectedVal, correct, isCorrect, options });
     }
 
     const pct = Math.round((score / TOTAL) * 100);
@@ -933,20 +942,36 @@
       ''
     ];
     results.forEach(r => {
-      textLines.push(`V${r.q}: ${r.question}`);
-      textLines.push(`  Gekozen: ${r.selected || '—'}   Correct: ${r.correct}   ${r.isCorrect ? '✓' : '✗'}`);
+      textLines.push(`Vraag ${r.q} — ${r.question}`);
+      Object.entries(r.options || {}).forEach(([letter, text]) => {
+        const marker = letter === r.correct ? ' ★' : '';
+        const chosen = letter === r.selected ? ' ←' : '';
+        textLines.push(`  ${letter}. ${text}${marker}${chosen}`);
+      });
+      textLines.push(`  → Gekozen: ${r.selected || '—'}  ·  Correct: ${r.correct}  ·  ${r.isCorrect ? '✓ juist' : '✗ fout'}`);
       textLines.push('');
     });
     const textBody = textLines.join('\n');
 
-    const rowsHtml = results.map(r => `
-      <tr style="border-bottom:1px solid #E3E7EE;">
-        <td style="padding:10px 12px;font-size:12px;color:#434A55;font-weight:600;white-space:nowrap;">V${r.q}</td>
-        <td style="padding:10px 12px;font-size:12px;color:#424B55;">${escapeHtml(r.question)}</td>
-        <td style="padding:10px 12px;font-size:12px;color:#424B55;text-align:center;">${r.selected || '—'}</td>
-        <td style="padding:10px 12px;font-size:12px;color:#424B55;text-align:center;">${r.correct}</td>
-        <td style="padding:10px 12px;font-size:14px;text-align:center;color:${r.isCorrect ? '#2e7d52' : '#a0341e'};font-weight:700;">${r.isCorrect ? '✓' : '✗'}</td>
-      </tr>`).join('');
+    // Per-vraag blok met alle opties (chosen in groen/rood, correct met ster)
+    const rowsHtml = results.map(r => {
+      const optionsHtml = Object.entries(r.options || {}).map(([letter, text]) => {
+        const isCorrect = letter === r.correct;
+        const isChosen = letter === r.selected;
+        let style = 'padding:8px 12px;font-size:12.5px;margin:4px 0;';
+        let label = '';
+        if (isChosen && isCorrect) { style += 'background:#eaf4ee;border-left:3px solid #2e7d52;color:#2e7d52;'; label = ' <strong>· gekozen (juist)</strong>'; }
+        else if (isChosen) { style += 'background:#fdf0ed;border-left:3px solid #a0341e;color:#a0341e;'; label = ' <strong>· gekozen (fout)</strong>'; }
+        else if (isCorrect) { style += 'background:#eaf4ee;border-left:3px solid #2e7d52;color:#2e7d52;'; label = ' <strong>· correct antwoord</strong>'; }
+        else { style += 'background:#FAFAFA;color:#888;'; }
+        return `<div style="${style}"><strong>${letter}</strong> — ${escapeHtml(text)}${label}</div>`;
+      }).join('');
+      return `
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12.5px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${r.q} — ${escapeHtml(r.question)}</div>
+          ${optionsHtml}
+        </div>`;
+    }).join('');
 
     const htmlBody = `
       <div style="font-family:Arial,sans-serif;color:#424B55;max-width:680px;">
@@ -959,18 +984,8 @@
         </div>
         ${(vis && !vis.clean) ? `<div style="margin-top:0;padding:12px 16px;background:#fff8e7;border-left:4px solid #d4a017;font-size:12px;color:#6b5200;"><strong>⚠ Tab verlaten:</strong> kandidaat heeft de tab <strong>${vis.awayCount} keer verlaten</strong> tijdens deze test (totaal ±${vis.awaySec} seconden). Dit kan wijzen op opzoekingen of afleiding.</div>` : ''}
         ${(online.count > 0) ? `<div style="margin-top:0;padding:12px 16px;background:#fdecec;border-left:4px solid #a0341e;font-size:12px;color:#6e2616;"><strong>⚠ Online tijdens test:</strong> kandidaat is <strong>${online.count} keer terug online gekomen</strong> tijdens de test (totaal ±${online.sec} seconden). Dit kan wijzen op het opzoeken van antwoorden.</div>` : ''}
-        <table style="width:100%;border-collapse:collapse;margin-top:16px;font-family:Arial,sans-serif;">
-          <thead>
-            <tr style="background:#EAEDF2;">
-              <th style="padding:10px 12px;font-size:11px;text-align:left;text-transform:uppercase;letter-spacing:1px;color:#434A55;">#</th>
-              <th style="padding:10px 12px;font-size:11px;text-align:left;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Vraag</th>
-              <th style="padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Gekozen</th>
-              <th style="padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Correct</th>
-              <th style="padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">OK</th>
-            </tr>
-          </thead>
-          <tbody>${rowsHtml}</tbody>
-        </table>
+        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:24px 0 12px;">Detail per vraag</h3>
+        <div style="background:#fff;padding:16px 20px;border:1px solid #e3e7ee;">${rowsHtml}</div>
         <div style="margin-top:24px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#bbb;text-align:center;">www.unitedconsulting.be</div>
       </div>`;
 

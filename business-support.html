@@ -546,19 +546,43 @@ Wat is de meest logische volgorde?</span></div>
   const WARNING_AT = 2 * 60;
   const CRITICAL_AT = 30;
 
-  // Deel 2 correcte antwoorden — worden gebruikt voor automatische scoring
-  const CORRECT = {
-    k1: 'A', // €3.600 = 12000 - 40% - 30% = 30% = 3600
-    k2: 'B', // 30 min = 35km / 70km/u
-    k3: 'A', // 78 (pattern: -5,-5,-2 cyclus)
-    k4: 'A', // 749: 7*4*9=252 + 7+4+9=20 = 272 > 381: 3*8*1=24 + 3+8+1=12 = 36
-    k5: 'A', // Klacht (urgent) → Post (voor 11u) → Vergadering (10u) → Rapport
-    k6: 'D', // 1,3,6,9 volgt geen consistent patroon
-    k7: 'B', // 3 × 42,50 × 0,90 = €114,75
-    k8: 'A', // "bevestigd heeft" + komma na bijzin
-    k9: 'C', // jouw belofte + verstuurt (jij + t-vorm)
-    k10: 'D' // einde + gedetailleerd (het rapport onbepaald → geen -e)
-  };
+  // Deel 1 — voorkeur-items met de volledige tekst per uitspraak
+  const PREF_ITEMS = [
+    { id: 'p1', A: 'Ik krijg voldoening als administratie tot in de puntjes klopt.', B: 'Ik krijg energie van het telefonisch contact met klanten.' },
+    { id: 'p2', A: 'Ik vind het belangrijk om snel te schakelen tussen verschillende taken.', B: 'Ik werk liever taak per taak af volgens een vaste planning.' },
+    { id: 'p3', A: 'Ik vind het belangrijk dat een klant zich gehoord voelt, ook al duurt het gesprek dan wat langer.', B: 'Ik hou klantgesprekken liever kort en efficiënt zodat ik snel kan doorgaan naar de volgende taak.' },
+    { id: 'p4', A: 'Als ik iets niet zeker weet, zoek ik het zelf eerst uit.', B: 'Ik vraag liever meteen hulp zodat ik geen tijd verlies.' },
+    { id: 'p5', A: 'Ik blijf meestal rustig, ook wanneer klanten ongeduldig zijn.', B: 'Ik ben vooral gericht op het vinden van een oplossing, ook als dat betekent dat ik wat directer moet zijn.' },
+    { id: 'p6', A: 'Ik geef de voorkeur aan een duidelijke dagplanning met vaste taken.', B: 'Ik vind het niet erg als mijn dag onvoorspelbaar verloopt.' },
+    { id: 'p7', A: 'Ik voel me comfortabel om iemand te bellen zonder veel achtergrondinformatie.', B: 'Ik bereid telefoongesprekken graag grondig voor.' },
+    { id: 'p8', A: 'Ik werk graag zelfstandig en neem initiatief als ik zie dat iets beter kan.', B: 'Ik overleg liever regelmatig met collega’s voor ik beslissingen neem.' },
+    { id: 'p9', A: 'Als ik meerdere dringende taken tegelijk heb, stel ik prioriteiten en werk ik ze stap voor stap af.', B: 'Ik probeer alles zo snel mogelijk op te lossen, ook als dat soms chaotisch voelt.' },
+    { id: 'p10', A: 'Ik werk graag aan rapporten of data-analyses waar ik me volledig op kan focussen.', B: 'Ik haal meer voldoening uit klantenvragen waarbij ik echt iets kan betekenen.' },
+    { id: 'p11', A: 'Ik krijg energie van het samenwerken in een team.', B: 'Ik werk het liefst zelfstandig zonder veel overleg.' },
+    { id: 'p12', A: 'Ik geef de voorkeur aan klantvriendelijkheid, ook als ik extra moet uitzoeken of terugbellen.', B: 'Ik kies liever voor een snelle oplossing zodat de klant niet hoeft te wachten.' },
+    { id: 'p13', A: 'Ik krijg energie van een werkomgeving waarin de verwachtingen per klant kunnen verschillen.', B: 'Ik werk het liefst volgens één vaste methode die ik bij elke klant kan toepassen.' },
+    { id: 'p14', A: 'Als mijn planning overhoop wordt gehaald door een klantvraag, blijf ik rustig en herschik ik mijn werk.', B: 'Ik vind het lastig als ik plots taken moet verschuiven, dat geeft me onrust.' },
+    { id: 'p15', A: 'Ik vind het leuk om telkens met nieuwe mensen samen te werken bij verschillende klanten.', B: 'Ik werk liever met een vast team in een stabiele omgeving.' }
+  ];
+
+  // Deel 2 — kennisvragen met volledige tekst + alle opties + correct antwoord
+  const KNOW_ITEMS = [
+    { id: 'k1', q: 'Kostenberekening — Een maandbudget van €12.000 wordt als volgt verdeeld: 40% naar personeel, 30% naar huur, en de rest naar overige kosten. Hoeveel gaat naar overige kosten?', options: { A: '€3.600', B: '€4.800', C: '€3.000', D: '€2.400' }, correct: 'A' },
+    { id: 'k2', q: 'Reistijdberekening — Een werknemer reist 35 km naar kantoor met een gemiddelde snelheid van 70 km/u. Hoe lang duurt de reis?', options: { A: '20 minuten', B: '30 minuten', C: '45 minuten', D: '60 minuten' }, correct: 'B' },
+    { id: 'k3', q: 'Getallenreeks — Vul de reeks aan met het juiste getal: 100, 95, 90, 88, 83, ...', options: { A: '78', B: '80', C: '85', D: '81' }, correct: 'A' },
+    { id: 'k4', q: 'Getallenreeks — Gegeven zijn de getallen 381 en 749. Bepaal per getal het product van de cijfers en de som van de cijfers. Tel elk bekomen getal bij elkaar op. Welk getal levert de hoogste uitkomst?', options: { A: 'Het getal 749', B: 'Het getal 381', C: 'Beide getallen geven een even hoge uitkomst', D: 'Geen van de bovenstaande antwoorden voldoet' }, correct: 'A' },
+    { id: 'k5', q: 'Logisch redeneren — Het is dinsdagochtend, je start om 9u met werken en je krijgt volgende taken: A. Vergadering om 10u (1u), B. Klacht van klant (dringend), C. Post ophalen voor 11u, D. Rapport afwerken (deadline: morgen). Wat is de meest logische volgorde?', options: { A: 'Klacht – Post – Vergadering – Rapport', B: 'Rapport – Vergadering – Klacht – Post', C: 'Vergadering – Post – Klacht – Rapport', D: 'Klacht – Vergadering – Post – Rapport' }, correct: 'A' },
+    { id: 'k6', q: 'Getallenreeks — Welke van de volgende patronen is niet logisch?', options: { A: '1, 4, 9, 16, ___', B: '1, 2, 4, 8, ___', C: '1, 3, 6, 10, ___', D: '1, 3, 6, 9, ___' }, correct: 'D' },
+    { id: 'k7', q: 'Berekening — Een klant bestelt 3 toners van €42,50 per stuk. Hij krijgt 10% korting. Wat is het eindbedrag (excl. btw)?', options: { A: '€127,50', B: '€114,75', C: '€115,50', D: '€119,75' }, correct: 'B' },
+    { id: 'k8', q: 'Welke zin is correct?', options: { A: 'Zodra de leverancier bevestigd heeft dat de goederen onderweg zijn, brengen wij u meteen op de hoogte.', B: 'Zodra de leverancier bevestigt heeft dat de goederen onderweg zijn, brengen wij u meteen op de hoogte.', C: 'Zodra de leverancier bevestigt heeft dat de goederen onderweg zijn brengen wij u meteen op de hoogte.', D: 'Zodra de leverancier bevestigd heeft dat de goederen onderweg zijn brengen wij u meteen op de hoogte.' }, correct: 'A' },
+    { id: 'k9', q: 'Welke zin is correct?', options: { A: 'De klant verwacht dat jij jouw belofte nakomt en de gegevens vandaag nog verstuurd.', B: 'De klant verwacht dat jij jou belofte nakomt en de gegevens vandaag nog verstuurt.', C: 'De klant verwacht dat jij jouw belofte nakomt en de gegevens vandaag nog verstuurt.', D: 'De klant verwacht dat jij jouw belofte nakomt en de gegevens vandaag nog verstuurdt.' }, correct: 'C' },
+    { id: 'k10', q: 'Welke zin is correct?', options: { A: 'De consultants dienen uiterlijk voor het eind van de maand een gedetailleerd rapport te bezorgen.', B: 'De consultants dienen uiterlijk voor het einde van de maand een gedetailleerde rapport te bezorgen.', C: 'De consultants dienen uiterlijk voor het eind van de maand een gedetailleerde rapport te bezorgen.', D: 'De consultants dienen uiterlijk voor het einde van de maand een gedetailleerd rapport te bezorgen.' }, correct: 'D' }
+  ];
+
+  // Legacy lookup — maakt CORRECT[k] blijven werken
+  const CORRECT = Object.fromEntries(KNOW_ITEMS.map(k => [k.id, k.correct]));
+  const PREF_BY_ID = Object.fromEntries(PREF_ITEMS.map(p => [p.id, p]));
+  const KNOW_BY_ID = Object.fromEntries(KNOW_ITEMS.map(k => [k.id, k]));
 
   const PREF_QUESTIONS = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','p14','p15'];
   const KNOWLEDGE_QUESTIONS = ['k1','k2','k3','k4','k5','k6','k7','k8','k9','k10'];
@@ -843,21 +867,66 @@ Wat is de meest logische volgorde?</span></div>
       '─────────── DEEL 1: VOORKEUREN ───────────',
       ''
     ];
-    PREF_QUESTIONS.forEach((k, i) => {
-      const v = answers[k] || '—';
-      lines.push(`Vraag ${i + 1}: ${v}`);
+    PREF_ITEMS.forEach((item, i) => {
+      const v = answers[item.id];
+      const chosen = v ? item[v] : null;
+      lines.push(`Vraag ${i + 1} — Wat past het best bij jou?`);
+      lines.push(`  A. ${item.A}`);
+      lines.push(`  B. ${item.B}`);
+      lines.push(`  → Gekozen: ${v ? v + ' (' + chosen + ')' : '—'}`);
+      lines.push('');
     });
-    lines.push('', '─────────── DEEL 2: KENNISVRAGEN ───────────', '');
-    knowledgeDetail.forEach((r, i) => {
-      lines.push(`Vraag ${i + 1}:  gekozen ${r.selected || '—'}  ·  correct ${r.correct}  ·  ${r.isCorrect ? '✓' : '✗'}`);
+    lines.push('─────────── DEEL 2: KENNISVRAGEN ───────────', '');
+    KNOW_ITEMS.forEach((item, i) => {
+      const r = knowledgeDetail[i];
+      lines.push(`Vraag ${i + 1} — ${item.q}`);
+      Object.entries(item.options).forEach(([letter, text]) => {
+        const marker = letter === item.correct ? ' ★' : '';
+        const chosen = letter === r.selected ? ' ←' : '';
+        lines.push(`  ${letter}. ${text}${marker}${chosen}`);
+      });
+      lines.push(`  → Gekozen: ${r.selected || '—'}  ·  Correct: ${item.correct}  ·  ${r.isCorrect ? '✓ juist' : '✗ fout'}`);
+      lines.push('');
     });
-    lines.push('', '─────────── DEEL 3: E-MAIL ───────────', '');
+    lines.push('─────────── DEEL 3: E-MAIL ───────────', '');
     lines.push(answers.email || '(geen antwoord ingevuld)');
     const textBody = lines.join('\n');
 
-    // HTML body
-    const prefRows = PREF_QUESTIONS.map((k, i) => `<tr><td style="padding:6px 10px;font-size:12px;border-bottom:1px dotted #ddd;">Vraag ${i + 1}</td><td style="padding:6px 10px;font-size:12px;font-weight:600;border-bottom:1px dotted #ddd;">${answers[k] || '—'}</td></tr>`).join('');
-    const knowRows = knowledgeDetail.map((r, i) => `<tr><td style="padding:6px 10px;font-size:12px;border-bottom:1px dotted #ddd;">Vraag ${i + 1}</td><td style="padding:6px 10px;font-size:12px;text-align:center;border-bottom:1px dotted #ddd;">${r.selected || '—'}</td><td style="padding:6px 10px;font-size:12px;text-align:center;border-bottom:1px dotted #ddd;">${r.correct}</td><td style="padding:6px 10px;font-size:14px;text-align:center;color:${r.isCorrect ? '#2e7d52' : '#a0341e'};font-weight:700;border-bottom:1px dotted #ddd;">${r.isCorrect ? '✓' : '✗'}</td></tr>`).join('');
+    // HTML body — per-vraag blokken met volledige tekst
+    const prefBlocks = PREF_ITEMS.map((item, i) => {
+      const v = answers[item.id];
+      const rowA = v === 'A'
+        ? `<div style="padding:8px 12px;background:#EAEDF2;border-left:3px solid #434A55;font-size:12.5px;color:#434A55;margin:4px 0;"><strong>A · gekozen</strong> — ${escapeHtml(item.A)}</div>`
+        : `<div style="padding:8px 12px;background:#FAFAFA;font-size:12.5px;color:#888;margin:4px 0;">A — ${escapeHtml(item.A)}</div>`;
+      const rowB = v === 'B'
+        ? `<div style="padding:8px 12px;background:#EAEDF2;border-left:3px solid #434A55;font-size:12.5px;color:#434A55;margin:4px 0;"><strong>B · gekozen</strong> — ${escapeHtml(item.B)}</div>`
+        : `<div style="padding:8px 12px;background:#FAFAFA;font-size:12.5px;color:#888;margin:4px 0;">B — ${escapeHtml(item.B)}</div>`;
+      return `
+        <div style="margin-bottom:18px;">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">Vraag ${i + 1} — Wat past het best bij jou?</div>
+          ${rowA}${rowB}
+        </div>`;
+    }).join('');
+
+    const knowBlocks = KNOW_ITEMS.map((item, i) => {
+      const r = knowledgeDetail[i];
+      const optionsHtml = Object.entries(item.options).map(([letter, text]) => {
+        const isCorrect = letter === item.correct;
+        const isChosen = letter === r.selected;
+        let style = 'padding:8px 12px;font-size:12.5px;margin:4px 0;';
+        let label = '';
+        if (isChosen && isCorrect) { style += 'background:#eaf4ee;border-left:3px solid #2e7d52;color:#2e7d52;'; label = ' <strong>· gekozen (juist)</strong>'; }
+        else if (isChosen) { style += 'background:#fdf0ed;border-left:3px solid #a0341e;color:#a0341e;'; label = ' <strong>· gekozen (fout)</strong>'; }
+        else if (isCorrect) { style += 'background:#eaf4ee;border-left:3px solid #2e7d52;color:#2e7d52;'; label = ' <strong>· correct antwoord</strong>'; }
+        else { style += 'background:#FAFAFA;color:#888;'; }
+        return `<div style="${style}"><strong>${letter}</strong> — ${escapeHtml(text)}${label}</div>`;
+      }).join('');
+      return `
+        <div style="margin-bottom:18px;">
+          <div style="font-size:12px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${i + 1} — ${escapeHtml(item.q)}</div>
+          ${optionsHtml}
+        </div>`;
+    }).join('');
 
     const htmlBody = `
       <div style="font-family:Arial,sans-serif;color:#424B55;max-width:720px;">
@@ -872,13 +941,10 @@ Wat is de meest logische volgorde?</span></div>
         ${(online.count > 0) ? `<div style="padding:12px 16px;background:#fdecec;border-left:4px solid #a0341e;font-size:12px;color:#6e2616;"><strong>⚠ Online tijdens test:</strong> kandidaat is <strong>${online.count} keer terug online gekomen</strong> tijdens de test (totaal ±${online.sec} seconden).</div>` : ''}
 
         <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:24px 0 12px;">Deel 1 — Voorkeuren</h3>
-        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;">${prefRows}</table>
+        <div style="background:#fff;padding:16px 20px;border:1px solid #e3e7ee;">${prefBlocks}</div>
 
         <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:32px 0 12px;">Deel 2 — Kennisvragen</h3>
-        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;">
-          <thead><tr style="background:#EAEDF2;"><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;text-align:left;">Vraag</th><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Gekozen</th><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">Correct</th><th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#434A55;">OK</th></tr></thead>
-          <tbody>${knowRows}</tbody>
-        </table>
+        <div style="background:#fff;padding:16px 20px;border:1px solid #e3e7ee;">${knowBlocks}</div>
 
         <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#434A55;margin:32px 0 12px;">Deel 3 — E-mail (open vraag)</h3>
         <div style="background:#FAFAFA;padding:16px 20px;border-left:3px solid #434A55;font-size:13px;color:#424B55;white-space:pre-wrap;line-height:1.6;">${escapeHtml(answers.email || '(geen antwoord ingevuld)')}</div>
