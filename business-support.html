@@ -241,7 +241,7 @@
   <div class="topbar-right" id="topbarRight" style="visibility:hidden;">
     <div class="topbar-timer" id="timerWrap">
       <span class="timer-label">Tijd</span>
-      <span class="timer-value" id="timerValue">10:00</span>
+      <span class="timer-value" id="timerValue">15:00</span>
     </div>
     <div class="topbar-progress">
       <span class="progress-label">Voortgang</span>
@@ -266,11 +266,11 @@
       Deze test bestaat uit <strong>3 delen</strong>: 15 voorkeur-vragen, 10 kennisvragen en 1 open vraag (mail schrijven).<br>
       Er zijn geen goede of foute antwoorden op deel 1 — antwoord spontaan.<br>
       Voor deel 2 telt elk correct antwoord voor 1 punt.<br><br>
-      Je hebt <strong>10 minuten</strong> tijd vanaf het moment dat je start. Wanneer de tijd op is, wordt je test automatisch ingediend met de antwoorden die je al gegeven hebt.<br><br>
+      Je hebt <strong>15 minuten</strong> tijd vanaf het moment dat je start. Voorzie ongeveer <strong>5 minuten voor de e-mail</strong> in Deel 3. Wanneer de tijd op is, wordt je test automatisch ingediend met de antwoorden die je al gegeven hebt.<br><br>
       <strong>Schakel je WiFi uit voor je start.</strong> De test werkt volledig offline — je resultaat wordt automatisch verstuurd zodra je terug online komt.</p>
       <div class="welcome-meta">
         <div class="welcome-meta-item"><div class="val">26</div><div class="lbl">Vragen</div></div>
-        <div class="welcome-meta-item"><div class="val">10</div><div class="lbl">Minuten tijd</div></div>
+        <div class="welcome-meta-item"><div class="val">15</div><div class="lbl">Minuten tijd</div></div>
         <div class="welcome-meta-item"><div class="val">3</div><div class="lbl">Delen</div></div>
       </div>
     </div>
@@ -542,7 +542,7 @@ Wat is de meest logische volgorde?</span></div>
   const API_ENDPOINT = 'https://europe-west1-uc-hr-test-sollicitanten.cloudfunctions.net/hr-tests-mailer';
   const TEST_NAME = 'United Business Support';
   const PENDING_KEY = 'united-bs-pending';
-  const TIME_LIMIT_SECONDS = 10 * 60;
+  const TIME_LIMIT_SECONDS = 15 * 60;
   const WARNING_AT = 2 * 60;
   const CRITICAL_AT = 30;
 
@@ -910,6 +910,7 @@ Wat is de meest logische volgorde?</span></div>
 
     const knowBlocks = KNOW_ITEMS.map((item, i) => {
       const r = knowledgeDetail[i];
+      const notAnswered = !r.selected;
       const optionsHtml = Object.entries(item.options).map(([letter, text]) => {
         const isCorrect = letter === item.correct;
         const isChosen = letter === r.selected;
@@ -921,9 +922,12 @@ Wat is de meest logische volgorde?</span></div>
         else { style += 'background:#FAFAFA;color:#888;'; }
         return `<div style="${style}"><strong>${letter}</strong> — ${escapeHtml(text)}${label}</div>`;
       }).join('');
+      const noAnswerBadge = notAnswered
+        ? `<div style="display:inline-block;padding:3px 10px;background:#fff8e7;color:#8a5a00;border:1px solid #d4a017;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">⚠ Niet beantwoord</div><br>`
+        : '';
       return `
         <div style="margin-bottom:18px;">
-          <div style="font-size:12px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${i + 1} — ${escapeHtml(item.q)}</div>
+          ${noAnswerBadge}<div style="font-size:12px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${i + 1} — ${escapeHtml(item.q)}</div>
           ${optionsHtml}
         </div>`;
     }).join('');

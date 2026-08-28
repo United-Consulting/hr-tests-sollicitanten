@@ -955,6 +955,7 @@
 
     // Per-vraag blok met alle opties (chosen in groen/rood, correct met ster)
     const rowsHtml = results.map(r => {
+      const notAnswered = !r.selected;
       const optionsHtml = Object.entries(r.options || {}).map(([letter, text]) => {
         const isCorrect = letter === r.correct;
         const isChosen = letter === r.selected;
@@ -966,9 +967,12 @@
         else { style += 'background:#FAFAFA;color:#888;'; }
         return `<div style="${style}"><strong>${letter}</strong> — ${escapeHtml(text)}${label}</div>`;
       }).join('');
+      const noAnswerBadge = notAnswered
+        ? `<div style="display:inline-block;padding:3px 10px;background:#fff8e7;color:#8a5a00;border:1px solid #d4a017;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">⚠ Niet beantwoord</div><br>`
+        : '';
       return `
         <div style="margin-bottom:20px;">
-          <div style="font-size:12.5px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${r.q} — ${escapeHtml(r.question)}</div>
+          ${noAnswerBadge}<div style="font-size:12.5px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${r.q} — ${escapeHtml(r.question)}</div>
           ${optionsHtml}
         </div>`;
     }).join('');
