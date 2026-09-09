@@ -647,16 +647,40 @@
   }
 
   // ════════════════ CONNECTIVITY ════════════════
-  function updateConnStatus() {
+  // navigator.onLine kan misleidend zijn (ethernet/hotspot/VPN houdt online:true).
+  // We valideren met een echte reachability-check via fetch met korte timeout.
+  async function reallyReachable() {
+    if (!navigator.onLine) return false;
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 2500);
+      const res = await fetch(API_ENDPOINT + '?ping=' + Date.now(), {
+        method: 'OPTIONS', cache: 'no-store', signal: ctrl.signal
+      });
+      clearTimeout(to);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function updateConnStatus() {
     const pill = document.getElementById('connPill');
     if (!pill) return;
     const text = pill.querySelector('.conn-text');
-    if (navigator.onLine) {
+    if (!navigator.onLine) {
+      pill.classList.add('offline');
+      text.innerHTML = 'Je bent <strong>offline</strong> — klaar om te starten';
+      return;
+    }
+    text.innerHTML = 'Verbindingsstatus checken...';
+    const reachable = await reallyReachable();
+    if (reachable) {
       pill.classList.remove('offline');
       text.innerHTML = 'Je bent <strong>online</strong> — schakel WiFi uit om te starten';
     } else {
       pill.classList.add('offline');
-      text.innerHTML = 'Je bent <strong>offline</strong> — klaar om te starten';
+      text.innerHTML = 'Je bent <strong>offline</strong> — klaar om te starten <span style="opacity:0.7;font-weight:400;">(je systeem meldt online maar er is geen internet-verbinding)</span>';
     }
   }
   window.addEventListener('online', () => {
@@ -740,10 +764,11 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function startTest() {
+  async function startTest() {
     const input = document.getElementById('candidateName');
     const name = input.value.trim();
     const nameError = document.getElementById('nameError');
+    const btn = document.getElementById('startBtn');
     if (name.length < 2 || !name.includes(' ')) {
       nameError.textContent = 'Vul je voor- en achternaam in.';
       nameError.classList.add('show');
@@ -751,9 +776,14 @@
       return;
     }
     if (navigator.onLine) {
-      nameError.textContent = 'Schakel je WiFi uit voor je de test start.';
-      nameError.classList.add('show');
-      return;
+      if (btn) { btn.disabled = true; btn.textContent = 'Verbinding checken...'; }
+      const online = await reallyReachable();
+      if (btn) { btn.disabled = false; btn.textContent = 'Start de test'; }
+      if (online) {
+        nameError.textContent = 'Schakel je WiFi uit voor je de test start.';
+        nameError.classList.add('show');
+        return;
+      }
     }
     nameError.classList.remove('show');
     candidateName = name;
