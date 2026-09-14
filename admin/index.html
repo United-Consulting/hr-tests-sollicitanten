@@ -387,7 +387,7 @@
     </div>
 
     <div class="filters">
-      <span class="filter-label">Filter</span>
+      <span class="filter-label">Test</span>
       <button class="chip active" data-filter="all" onclick="setFilter('all')">Alle</button>
       <button class="chip" data-filter="attitude" onclick="setFilter('attitude')">Startup Attitude</button>
       <button class="chip" data-filter="bs" onclick="setFilter('bs')">Business Support</button>
@@ -397,6 +397,16 @@
       <input class="filter-search" type="search" id="searchInput" placeholder="Zoek op naam..." oninput="renderTable()">
     </div>
 
+    <div class="filters" style="margin-top:-10px;">
+      <span class="filter-label">Business Unit</span>
+      <button class="chip active" data-bu-filter="all" onclick="setBuFilter('all')">Alle BU</button>
+      <button class="chip" data-bu-filter="Finance" onclick="setBuFilter('Finance')">Finance</button>
+      <button class="chip" data-bu-filter="HR" onclick="setBuFilter('HR')">HR</button>
+      <button class="chip" data-bu-filter="Supply Chain" onclick="setBuFilter('Supply Chain')">Supply Chain</button>
+      <button class="chip" data-bu-filter="Business Support" onclick="setBuFilter('Business Support')">Business Support</button>
+      <button class="chip" data-bu-filter="Marketing" onclick="setBuFilter('Marketing')">Marketing</button>
+    </div>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -404,6 +414,7 @@
             <th>Datum</th>
             <th>Test</th>
             <th>Kandidaat</th>
+            <th>Business Unit</th>
             <th>Score</th>
             <th>Tijd</th>
             <th>Tab</th>
@@ -412,7 +423,7 @@
           </tr>
         </thead>
         <tbody id="resultsBody">
-          <tr><td colspan="8" class="loading">Resultaten laden...</td></tr>
+          <tr><td colspan="9" class="loading">Resultaten laden...</td></tr>
         </tbody>
       </table>
     </div>
@@ -485,6 +496,7 @@
   let allResults = [];
   let allCandidates = [];
   let currentFilter = 'all';
+  let currentBuFilter = 'all';
   let currentCFilter = 'all';
   let selectedId = null;
   let activeTab = 'results';
@@ -692,7 +704,7 @@
     const pwd = sessionStorage.getItem(PWD_KEY);
     if (!pwd) { logout(); return; }
     const body = document.getElementById('resultsBody');
-    body.innerHTML = '<tr><td colspan="8" class="loading">Resultaten laden...</td></tr>';
+    body.innerHTML = '<tr><td colspan="9" class="loading">Resultaten laden...</td></tr>';
     try {
       const res = await fetch(RESULTS_URL, {
         method: 'POST',
@@ -704,7 +716,7 @@
       allResults = data.items || [];
       renderTable();
     } catch (e) {
-      body.innerHTML = `<tr><td colspan="8" class="loading">Kon resultaten niet laden: ${escapeHtml(e.message)}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="9" class="loading">Kon resultaten niet laden: ${escapeHtml(e.message)}</td></tr>`;
     }
   }
 
@@ -713,6 +725,14 @@
     currentFilter = f;
     document.querySelectorAll('.chip[data-filter]').forEach(c => {
       c.classList.toggle('active', c.dataset.filter === f);
+    });
+    renderTable();
+  }
+
+  function setBuFilter(f) {
+    currentBuFilter = f;
+    document.querySelectorAll('.chip[data-bu-filter]').forEach(c => {
+      c.classList.toggle('active', c.dataset.buFilter === f);
     });
     renderTable();
   }
@@ -728,6 +748,10 @@
         const m = r.meta || {};
         if (!(m.awayCount > 0 || m.onlineCount > 0 || m.autoSubmitted)) return false;
       }
+      if (currentBuFilter !== 'all') {
+        const bu = (r.meta && r.meta.businessUnit) || '';
+        if (bu !== currentBuFilter) return false;
+      }
       if (search && !(r.candidateName || '').toLowerCase().includes(search)) return false;
       return true;
     });
@@ -740,7 +764,7 @@
       `${items.length} van ${allResults.length} inzendingen`;
 
     if (items.length === 0) {
-      body.innerHTML = '<tr><td colspan="8" class="loading">Geen resultaten gevonden.</td></tr>';
+      body.innerHTML = '<tr><td colspan="9" class="loading">Geen resultaten gevonden.</td></tr>';
       return;
     }
 
@@ -779,7 +803,8 @@
         <tr data-id="${r.id}" onclick="openDetail('${r.id}')" class="${selectedId === r.id ? 'selected' : ''}">
           <td class="num-cell">${date}</td>
           <td>${testBadge}</td>
-          <td class="name-cell">${escapeHtml(r.candidateName)}${m.businessUnit ? `<div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px;">${escapeHtml(m.businessUnit)}</div>` : ''}</td>
+          <td class="name-cell">${escapeHtml(r.candidateName)}</td>
+          <td>${m.businessUnit ? escapeHtml(m.businessUnit) : '<span style="color:var(--muted)">—</span>'}</td>
           <td class="num-cell">${score}</td>
           <td class="num-cell">${time}</td>
           <td>${awayBadge}</td>
