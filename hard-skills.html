@@ -1050,8 +1050,16 @@
     const textBody = textLines.join('\n');
 
     // Per-vraag blok met alle opties (chosen in groen/rood, correct met ster)
+    function levelInfo(q) {
+      if (q <= 5) return { n: 1, label: 'Basiskennis', color: '#3A8A5C' };
+      if (q <= 10) return { n: 2, label: 'Intermediair', color: '#8FAE3E' };
+      if (q <= 15) return { n: 3, label: 'Gevorderd', color: '#E6A027' };
+      return { n: 4, label: 'Expert', color: '#C0392B' };
+    }
+
     const rowsHtml = results.map(r => {
       const notAnswered = !r.selected;
+      const lvl = levelInfo(r.q);
       const optionsHtml = Object.entries(r.options || {}).map(([letter, text]) => {
         const isCorrect = letter === r.correct;
         const isChosen = letter === r.selected;
@@ -1066,9 +1074,11 @@
       const noAnswerBadge = notAnswered
         ? `<div style="display:inline-block;padding:3px 10px;background:#fff8e7;color:#8a5a00;border:1px solid #d4a017;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">⚠ Niet beantwoord</div><br>`
         : '';
+      const levelBadge = `<div style="display:inline-block;padding:3px 10px;background:${lvl.color};color:#fff;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Niveau ${lvl.n} · ${lvl.label}</div>`;
       return `
-        <div style="margin-bottom:20px;">
-          ${noAnswerBadge}<div style="font-size:12.5px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${r.q} — ${escapeHtml(r.question)}</div>
+        <div style="margin-bottom:24px;padding-left:14px;border-left:4px solid ${lvl.color};">
+          ${levelBadge}${noAnswerBadge ? '<br>' + noAnswerBadge : ''}
+          <div style="font-size:12.5px;color:#434A55;font-weight:600;line-height:1.5;margin-bottom:6px;">Vraag ${r.q} — ${escapeHtml(r.question)}</div>
           ${optionsHtml}
         </div>`;
     }).join('');
