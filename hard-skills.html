@@ -277,7 +277,7 @@
     border-top: 1px solid rgba(255,255,255,0.12); line-height: 1.6;
   }
   .r-grid {
-    display: grid; grid-template-columns: repeat(15, 1fr);
+    display: grid; grid-template-columns: repeat(20, 1fr);
     gap: 4px; margin-top: 1.5rem;
   }
   .r-dot { height: 6px; background: rgba(255,255,255,0.2); }
@@ -340,7 +340,7 @@
       <div class="progress-bar-wrap">
         <div class="progress-bar-fill" id="progressFill"></div>
       </div>
-      <span class="progress-count" id="progressCount">0 / 15</span>
+      <span class="progress-count" id="progressCount">0 / 20</span>
     </div>
   </div>
 </div>
@@ -363,7 +363,7 @@
       <strong>Schakel je WiFi uit voor je start.</strong> De test werkt volledig offline — je resultaat wordt automatisch verstuurd zodra je terug online komt.</p>
       <div class="welcome-meta">
         <div class="welcome-meta-item">
-          <div class="val">15</div>
+          <div class="val">20</div>
           <div class="lbl">Vragen</div>
         </div>
         <div class="welcome-meta-item">
@@ -399,185 +399,246 @@
       <div class="question-card" id="qcard-1">
         <div class="question-header">
           <span class="q-num">01</span>
-          <span class="q-text">Wat is het verschil tussen brutoloon en nettoloon?</span>
+          <span class="q-text">Wat is de DIMONA-aangifte?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-1-A"><input type="radio" name="q1" value="A"><span class="option-key">A</span><span class="option-text">Nettoloon is het bedrag dat de medewerker maandelijks op zijn rekening ontvangt van de werkgever</span></label>
-          <label class="option" id="opt-1-B"><input type="radio" name="q1" value="B"><span class="option-key">B</span><span class="option-text">Brutoloon en nettoloon zijn hetzelfde bedrag</span></label>
-          <label class="option" id="opt-1-C"><input type="radio" name="q1" value="C"><span class="option-key">C</span><span class="option-text">Brutoloon is het bedrag dat de medewerker maandelijks ontvangt van de werkgever</span></label>
+          <label class="option" id="opt-1-A"><input type="radio" name="q1" value="A"><span class="option-key">A</span><span class="option-text">Een maandelijkse loonopgave die de werkgever indient bij de RSZ.</span></label>
+          <label class="option" id="opt-1-B"><input type="radio" name="q1" value="B"><span class="option-key">B</span><span class="option-text">Een onmiddellijke elektronische aangifte van in- en uitdiensttreding bij de RSZ.</span></label>
+          <label class="option" id="opt-1-C"><input type="radio" name="q1" value="C"><span class="option-key">C</span><span class="option-text">Een jaarlijkse fiscale aangifte van voordelen alle aard aan de belastingdienst.</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-2">
         <div class="question-header">
           <span class="q-num">02</span>
-          <span class="q-text">Hoe werkt de opbouw van jaarlijkse vakantie in België?</span>
+          <span class="q-text">Hoeveel bedraagt de persoonlijke RSZ-bijdrage van een gewone werknemer in principe op het brutoloon?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-2-A"><input type="radio" name="q2" value="A"><span class="option-key">A</span><span class="option-text">Je bouwt je vakantiedagen op in het huidige jaar op basis van het aantal gewerkte dagen in datzelfde jaar</span></label>
-          <label class="option" id="opt-2-B"><input type="radio" name="q2" value="B"><span class="option-key">B</span><span class="option-text">Je bouwt je vakantiedagen op in het vorige kalenderjaar en neemt ze op in het huidige jaar</span></label>
-          <label class="option" id="opt-2-C"><input type="radio" name="q2" value="C"><span class="option-key">C</span><span class="option-text">Je krijgt elk jaar automatisch hetzelfde aantal vakantiedagen, ongeacht hoeveel dagen je gewerkt hebt</span></label>
+          <label class="option" id="opt-2-A"><input type="radio" name="q2" value="A"><span class="option-key">A</span><span class="option-text">11,07%</span></label>
+          <label class="option" id="opt-2-B"><input type="radio" name="q2" value="B"><span class="option-key">B</span><span class="option-text">13,07%</span></label>
+          <label class="option" id="opt-2-C"><input type="radio" name="q2" value="C"><span class="option-key">C</span><span class="option-text">15,07%</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-3">
         <div class="question-header">
           <span class="q-num">03</span>
-          <span class="q-text">Je werkt als bediende en wordt ziek. Hoe lang betaalt je werkgever gewaarborgd loon en vanaf wanneer neemt de mutualiteit dit over?</span>
+          <span class="q-text">Een voltijdse werknemer werkt gedurende een volledig vakantiedienstjaar in een vijfdagenweek. Op hoeveel wettelijke vakantiedagen heeft hij in het daaropvolgende vakantiejaar in principe recht?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-3-A"><input type="radio" name="q3" value="A"><span class="option-key">A</span><span class="option-text">Mutualiteit betaalt vanaf de eerste dag van de ziekte alles uit</span></label>
-          <label class="option" id="opt-3-B"><input type="radio" name="q3" value="B"><span class="option-key">B</span><span class="option-text">Werkgever betaalt dag 1 – 14 van de ziekte, nadien gebeurt dit door de mutualiteit</span></label>
-          <label class="option" id="opt-3-C"><input type="radio" name="q3" value="C"><span class="option-key">C</span><span class="option-text">Werkgever betaalt dag 1 – 30 van de ziekte, nadien gebeurt dit door de mutualiteit</span></label>
+          <label class="option" id="opt-3-A"><input type="radio" name="q3" value="A"><span class="option-key">A</span><span class="option-text">15 werkdagen</span></label>
+          <label class="option" id="opt-3-B"><input type="radio" name="q3" value="B"><span class="option-key">B</span><span class="option-text">20 werkdagen</span></label>
+          <label class="option" id="opt-3-C"><input type="radio" name="q3" value="C"><span class="option-key">C</span><span class="option-text">25 werkdagen</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-4">
         <div class="question-header">
           <span class="q-num">04</span>
-          <span class="q-text">Wie betaalt het loon van de werknemer tijdens haar zwangerschapsverlof?</span>
+          <span class="q-text">Hoeveel uur kan een student per kalenderjaar werken tegen de verminderde sociale bijdragen?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-4-A"><input type="radio" name="q4" value="A"><span class="option-key">A</span><span class="option-text">De werknemer zelf</span></label>
-          <label class="option" id="opt-4-B"><input type="radio" name="q4" value="B"><span class="option-key">B</span><span class="option-text">De werkgever</span></label>
-          <label class="option" id="opt-4-C"><input type="radio" name="q4" value="C"><span class="option-key">C</span><span class="option-text">De mutualiteit</span></label>
+          <label class="option" id="opt-4-A"><input type="radio" name="q4" value="A"><span class="option-key">A</span><span class="option-text">475 uur</span></label>
+          <label class="option" id="opt-4-B"><input type="radio" name="q4" value="B"><span class="option-key">B</span><span class="option-text">600 uur</span></label>
+          <label class="option" id="opt-4-C"><input type="radio" name="q4" value="C"><span class="option-key">C</span><span class="option-text">650 uur</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-5">
         <div class="question-header">
           <span class="q-num">05</span>
-          <span class="q-text">Wat is het verschil tussen een opzeggingsvergoeding en een verbrekingsvergoeding?</span>
+          <span class="q-text">Wat is de DmfA?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-5-A"><input type="radio" name="q5" value="A"><span class="option-key">A</span><span class="option-text">Bij een opzeggingsvergoeding stopt het contract onmiddellijk, terwijl je bij een verbrekingsvergoeding nog moet blijven werken</span></label>
-          <label class="option" id="opt-5-B"><input type="radio" name="q5" value="B"><span class="option-key">B</span><span class="option-text">Bij een opzeggingsvergoeding werk je tijdens de opzegtermijn en krijg je loon, terwijl je bij een verbrekingsvergoeding meteen stopt en een vergoeding krijgt</span></label>
-          <label class="option" id="opt-5-C"><input type="radio" name="q5" value="C"><span class="option-key">C</span><span class="option-text">Beide betekenen dat je onmiddellijk stopt met werken en een vergoeding ontvangt</span></label>
+          <label class="option" id="opt-5-A"><input type="radio" name="q5" value="A"><span class="option-key">A</span><span class="option-text">Een dagelijkse aangifte van overuren bij de sociale inspectie.</span></label>
+          <label class="option" id="opt-5-B"><input type="radio" name="q5" value="B"><span class="option-key">B</span><span class="option-text">Een maandelijkse loonfiche die aan de werknemer wordt overhandigd.</span></label>
+          <label class="option" id="opt-5-C"><input type="radio" name="q5" value="C"><span class="option-key">C</span><span class="option-text">Een kwartaalaangifte van lonen en arbeidstijden die de werkgever indient bij de RSZ.</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-6">
         <div class="question-header">
           <span class="q-num">06</span>
-          <span class="q-text">Hoelang moet je in dienst zijn om ouderschapsverlof te kunnen opnemen?</span>
+          <span class="q-text">Hoeveel bedraagt de basiswerkgeversbijdrage aan de RSZ voor een gewone werknemer in de privésector na de taxshift?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-6-A"><input type="radio" name="q6" value="A"><span class="option-key">A</span><span class="option-text">Minstens 1 maand</span></label>
-          <label class="option" id="opt-6-B"><input type="radio" name="q6" value="B"><span class="option-key">B</span><span class="option-text">Minstens 3 maanden</span></label>
-          <label class="option" id="opt-6-C"><input type="radio" name="q6" value="C"><span class="option-key">C</span><span class="option-text">Minstens 1 jaar</span></label>
+          <label class="option" id="opt-6-A"><input type="radio" name="q6" value="A"><span class="option-key">A</span><span class="option-text">25%</span></label>
+          <label class="option" id="opt-6-B"><input type="radio" name="q6" value="B"><span class="option-key">B</span><span class="option-text">32,57%</span></label>
+          <label class="option" id="opt-6-C"><input type="radio" name="q6" value="C"><span class="option-key">C</span><span class="option-text">20%</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-7">
         <div class="question-header">
           <span class="q-num">07</span>
-          <span class="q-text">Op hoeveel weken moederschapsrust heb je recht als je mama wordt?</span>
+          <span class="q-text">Een werknemer krijgt een bedrijfswagen die hij ook privé mag gebruiken. Welke elementen spelen een rol bij de berekening van het belastbare voordeel alle aard?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-7-A"><input type="radio" name="q7" value="A"><span class="option-key">A</span><span class="option-text">9 weken</span></label>
-          <label class="option" id="opt-7-B"><input type="radio" name="q7" value="B"><span class="option-key">B</span><span class="option-text">15 weken</span></label>
-          <label class="option" id="opt-7-C"><input type="radio" name="q7" value="C"><span class="option-key">C</span><span class="option-text">20 weken</span></label>
+          <label class="option" id="opt-7-A"><input type="radio" name="q7" value="A"><span class="option-key">A</span><span class="option-text">Enkel het brutoloon van de werknemer.</span></label>
+          <label class="option" id="opt-7-B"><input type="radio" name="q7" value="B"><span class="option-key">B</span><span class="option-text">De cataloguswaarde, CO₂-uitstoot, ouderdom van de wagen en de vaste correctiefactor (6/7).</span></label>
+          <label class="option" id="opt-7-C"><input type="radio" name="q7" value="C"><span class="option-key">C</span><span class="option-text">De cataloguswaarde, CO₂-uitstoot, type wagen en de vaste correctiefactor (6/7).</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-8">
         <div class="question-header">
           <span class="q-num">08</span>
-          <span class="q-text">Welke verzekering ben je verplicht te voorzien als werkgever voor elke werknemer in België?</span>
+          <span class="q-text">Een werkgever stelt een smartphone/GSM ter beschikking die de werknemer ook privé mag gebruiken. Hoeveel bedraagt het forfaitaire voordeel alle aard voor het toestel zelf?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-8-A"><input type="radio" name="q8" value="A"><span class="option-key">A</span><span class="option-text">Groepsverzekering</span></label>
-          <label class="option" id="opt-8-B"><input type="radio" name="q8" value="B"><span class="option-key">B</span><span class="option-text">Hospitalisatieverzekering</span></label>
-          <label class="option" id="opt-8-C"><input type="radio" name="q8" value="C"><span class="option-key">C</span><span class="option-text">Arbeidsongevallenverzekering</span></label>
+          <label class="option" id="opt-8-A"><input type="radio" name="q8" value="A"><span class="option-key">A</span><span class="option-text">€3 per maand</span></label>
+          <label class="option" id="opt-8-B"><input type="radio" name="q8" value="B"><span class="option-key">B</span><span class="option-text">€6 per maand</span></label>
+          <label class="option" id="opt-8-C"><input type="radio" name="q8" value="C"><span class="option-key">C</span><span class="option-text">€12,50 per maand</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-9">
         <div class="question-header">
           <span class="q-num">09</span>
-          <span class="q-text">Wat is een netto-vergoeding?</span>
+          <span class="q-text">Welke voorwaarde geldt in principe om als werknemer een flexi-job te kunnen uitoefenen?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-9-A"><input type="radio" name="q9" value="A"><span class="option-key">A</span><span class="option-text">Een vergoeding waarop enkel RSZ verschuldigd is, maar geen belastingen</span></label>
-          <label class="option" id="opt-9-B"><input type="radio" name="q9" value="B"><span class="option-key">B</span><span class="option-text">Een brutoloonbestanddeel dat vrijgesteld is van bedrijfsvoorheffing</span></label>
-          <label class="option" id="opt-9-C"><input type="radio" name="q9" value="C"><span class="option-key">C</span><span class="option-text">Een terugbetaling van kosten eigen aan de werkgever, vrijgesteld van RSZ en belastingen mits correct onderbouwd</span></label>
+          <label class="option" id="opt-9-A"><input type="radio" name="q9" value="A"><span class="option-key">A</span><span class="option-text">De werknemer mag maximaal 25 jaar oud zijn.</span></label>
+          <label class="option" id="opt-9-B"><input type="radio" name="q9" value="B"><span class="option-key">B</span><span class="option-text">De werknemer moet bij een andere werkgever minstens 4/5 tewerkgesteld zijn, of gepensioneerd zijn.</span></label>
+          <label class="option" id="opt-9-C"><input type="radio" name="q9" value="C"><span class="option-key">C</span><span class="option-text">De werknemer moet minstens 5 jaar anciënniteit hebben bij de flexi-werkgever.</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-10">
         <div class="question-header">
           <span class="q-num">10</span>
-          <span class="q-text">Wat is het doel van een DIMONA-aangifte voor een werkgever?</span>
+          <span class="q-text">Een bediende heeft recht op 20 wettelijke vakantiedagen. Hoeveel bedraagt het dubbel vakantiegeld in principe?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-10-A"><input type="radio" name="q10" value="A"><span class="option-key">A</span><span class="option-text">Een elektronische melding van elke in- en uitdiensttreding van een werknemer aan de overheid</span></label>
-          <label class="option" id="opt-10-B"><input type="radio" name="q10" value="B"><span class="option-key">B</span><span class="option-text">Een maandelijkse belasting die werknemers moeten betalen op hun loon</span></label>
-          <label class="option" id="opt-10-C"><input type="radio" name="q10" value="C"><span class="option-key">C</span><span class="option-text">Een premie die je ontvangt wanneer je ziek bent en niet kan werken</span></label>
+          <label class="option" id="opt-10-A"><input type="radio" name="q10" value="A"><span class="option-key">A</span><span class="option-text">92% van het maandloon</span></label>
+          <label class="option" id="opt-10-B"><input type="radio" name="q10" value="B"><span class="option-key">B</span><span class="option-text">85% van het maandloon</span></label>
+          <label class="option" id="opt-10-C"><input type="radio" name="q10" value="C"><span class="option-key">C</span><span class="option-text">89% van het maandloon</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-11">
         <div class="question-header">
           <span class="q-num">11</span>
-          <span class="q-text">Wat is de huidige werknemersbijdrage RSZ in België?</span>
+          <span class="q-text">Een bediende start op 1 april bij een nieuwe werkgever. Bij zijn vorige werkgever heeft hij vertrekvakantiegeld ontvangen. In juni neemt hij 5 wettelijke vakantiedagen op bij zijn nieuwe werkgever. Welke uitspraak is correct?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-11-A"><input type="radio" name="q11" value="A"><span class="option-key">A</span><span class="option-text">13,07%</span></label>
-          <label class="option" id="opt-11-B"><input type="radio" name="q11" value="B"><span class="option-key">B</span><span class="option-text">15,07%</span></label>
-          <label class="option" id="opt-11-C"><input type="radio" name="q11" value="C"><span class="option-key">C</span><span class="option-text">17,07%</span></label>
+          <label class="option" id="opt-11-A"><input type="radio" name="q11" value="A"><span class="option-key">A</span><span class="option-text">De nieuwe werkgever betaalt 100% van het normale loon voor deze vakantiedagen. Het vertrekvakantiegeld heeft geen invloed op de payroll.</span></label>
+          <label class="option" id="opt-11-B"><input type="radio" name="q11" value="B"><span class="option-key">B</span><span class="option-text">De nieuwe werkgever betaalt een voorschot van 10% van het normale loon voor deze vakantiedagen. De overige 90% wordt verrekend met het eerder ontvangen vertrekvakantiegeld. Later volgt een eindafrekening.</span></label>
+          <label class="option" id="opt-11-C"><input type="radio" name="q11" value="C"><span class="option-key">C</span><span class="option-text">De werknemer ontvangt voor deze vakantiedagen geen loon, aangezien hij hiervoor al vakantiegeld heeft ontvangen bij zijn vorige werkgever.</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-12">
         <div class="question-header">
           <span class="q-num">12</span>
-          <span class="q-text">Wat is het VAA voor een bedrijfswagen?</span>
+          <span class="q-text">Een werknemer is langdurig arbeidsongeschikt. De periode van gewaarborgd loon is verstreken. Wie betaalt in principe de arbeidsongeschiktheidsuitkering vanaf dat moment?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-12-A"><input type="radio" name="q12" value="A"><span class="option-key">A</span><span class="option-text">Een vast bedrag per maand, ongeacht het type wagen, te betalen door de werkgever</span></label>
-          <label class="option" id="opt-12-B"><input type="radio" name="q12" value="B"><span class="option-key">B</span><span class="option-text">Een berekend belastbaar voordeel op basis van o.a. de cataloguswaarde van de wagen</span></label>
-          <label class="option" id="opt-12-C"><input type="radio" name="q12" value="C"><span class="option-key">C</span><span class="option-text">Een vast bedrag per maand, ongeacht het type wagen, te betalen door de werknemer voor privégebruik van de wagen, buiten woon-werkverkeer</span></label>
+          <label class="option" id="opt-12-A"><input type="radio" name="q12" value="A"><span class="option-key">A</span><span class="option-text">De werkgever</span></label>
+          <label class="option" id="opt-12-B"><input type="radio" name="q12" value="B"><span class="option-key">B</span><span class="option-text">De RVA</span></label>
+          <label class="option" id="opt-12-C"><input type="radio" name="q12" value="C"><span class="option-key">C</span><span class="option-text">Het ziekenfonds</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-13">
         <div class="question-header">
           <span class="q-num">13</span>
-          <span class="q-text">Wat is het systeem van de "flexibele verloning" of het cafetariaplan?</span>
+          <span class="q-text">Een werknemer hervat het werk na een periode van arbeidsongeschiktheid en werkt opnieuw gedeeltelijk in het kader van een toegestane progressieve werkhervatting. Welke uitspraak is correct?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-13-A"><input type="radio" name="q13" value="A"><span class="option-key">A</span><span class="option-text">Een systeem waarbij werknemers hun uurrooster vrij kunnen kiezen</span></label>
-          <label class="option" id="opt-13-B"><input type="radio" name="q13" value="B"><span class="option-key">B</span><span class="option-text">Een wettelijk verplicht systeem voor bedrijven met meer dan 50 werknemers</span></label>
-          <label class="option" id="opt-13-C"><input type="radio" name="q13" value="C"><span class="option-key">C</span><span class="option-text">Een systeem waarbij werknemers (een deel van) hun brutoloon of eindejaarspremie omruilen voor alternatieve voordelen</span></label>
+          <label class="option" id="opt-13-A"><input type="radio" name="q13" value="A"><span class="option-key">A</span><span class="option-text">De werknemer ontvangt uitsluitend zijn normale loon voor de effectief gewerkte uren. Een uitkering van het ziekenfonds is niet meer mogelijk.</span></label>
+          <label class="option" id="opt-13-B"><input type="radio" name="q13" value="B"><span class="option-key">B</span><span class="option-text">De werknemer kan zijn loon voor de gewerkte prestaties combineren met een arbeidsongeschiktheidsuitkering van het ziekenfonds.</span></label>
+          <label class="option" id="opt-13-C"><input type="radio" name="q13" value="C"><span class="option-key">C</span><span class="option-text">Een progressieve werkhervatting is enkel mogelijk wanneer de werknemer opnieuw voltijds werkt.</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-14">
         <div class="question-header">
           <span class="q-num">14</span>
-          <span class="q-text">Wat is de maximale onbelaste kilometervergoeding voor verplaatsingen voor beroepsdoeleinden met de eigen wagen (2026)?</span>
+          <span class="q-text">Een werknemer vraagt aan de payroll consultant wanneer hij recht heeft op een eindejaarspremie. Welke uitspraak is het meest correct?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-14-A"><input type="radio" name="q14" value="A"><span class="option-key">A</span><span class="option-text">€0,15 per km</span></label>
-          <label class="option" id="opt-14-B"><input type="radio" name="q14" value="B"><span class="option-key">B</span><span class="option-text">€0,21 per km</span></label>
-          <label class="option" id="opt-14-C"><input type="radio" name="q14" value="C"><span class="option-key">C</span><span class="option-text">€0,43 per km</span></label>
+          <label class="option" id="opt-14-A"><input type="radio" name="q14" value="A"><span class="option-key">A</span><span class="option-text">Iedere werknemer in België heeft automatisch recht op een wettelijke eindejaarspremie.</span></label>
+          <label class="option" id="opt-14-B"><input type="radio" name="q14" value="B"><span class="option-key">B</span><span class="option-text">Het recht, de voorwaarden en het bedrag van een eindejaarspremie kunnen onder meer bepaald worden door een sectorale cao, ondernemings-cao of individuele arbeidsovereenkomst.</span></label>
+          <label class="option" id="opt-14-C"><input type="radio" name="q14" value="C"><span class="option-key">C</span><span class="option-text">Een eindejaarspremie is altijd gelijk aan één volledig brutomaandloon.</span></label>
         </div>
       </div>
 
       <div class="question-card" id="qcard-15">
         <div class="question-header">
           <span class="q-num">15</span>
-          <span class="q-text">Wat is CAO 32bis?</span>
+          <span class="q-text">Een werknemer wordt ontslagen en ontvangt een opzeggingsvergoeding. Wat vormt in principe de berekeningsbasis?</span>
         </div>
         <div class="options-list">
-          <label class="option" id="opt-15-A"><input type="radio" name="q15" value="A"><span class="option-key">A</span><span class="option-text">Een overname van een bedrijf waarbij de medewerker zijn rechten en plichten behoudt</span></label>
-          <label class="option" id="opt-15-B"><input type="radio" name="q15" value="B"><span class="option-key">B</span><span class="option-text">Een collectief ontslag van meer dan 10 werknemers tegelijk</span></label>
-          <label class="option" id="opt-15-C"><input type="radio" name="q15" value="C"><span class="option-key">C</span><span class="option-text">Een niet-recurrente resultaatsgebonden bonus die fiscaal voordelig is voor werknemers, uit te keren wanneer bepaalde doelstellingen worden behaald</span></label>
+          <label class="option" id="opt-15-A"><input type="radio" name="q15" value="A"><span class="option-key">A</span><span class="option-text">Het nettoloon van de laatste maand.</span></label>
+          <label class="option" id="opt-15-B"><input type="radio" name="q15" value="B"><span class="option-key">B</span><span class="option-text">Het lopend loon, inclusief de voordelen verworven krachtens de arbeidsovereenkomst.</span></label>
+          <label class="option" id="opt-15-C"><input type="radio" name="q15" value="C"><span class="option-key">C</span><span class="option-text">Enkel het basisbrutoloon, zonder voordelen.</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-16">
+        <div class="question-header">
+          <span class="q-num">16</span>
+          <span class="q-text">Een werknemer werkt structureel en regelmatig van thuis uit en voldoet aan de voorwaarden om een forfaitaire thuiswerkvergoeding te ontvangen. Wat is vanaf 1 september 2026 het maximale maandelijkse bedrag dat de werkgever als forfaitaire kantoorvergoeding kan toekennen?</span>
+        </div>
+        <div class="options-list">
+          <label class="option" id="opt-16-A"><input type="radio" name="q16" value="A"><span class="option-key">A</span><span class="option-text">€151,70</span></label>
+          <label class="option" id="opt-16-B"><input type="radio" name="q16" value="B"><span class="option-key">B</span><span class="option-text">€160,99</span></label>
+          <label class="option" id="opt-16-C"><input type="radio" name="q16" value="C"><span class="option-key">C</span><span class="option-text">€164,21</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-17">
+        <div class="question-header">
+          <span class="q-num">17</span>
+          <span class="q-text">Een werknemer wil zijn arbeidsprestaties met 1/5 verminderen in het kader van ouderschapsverlof. Hij is momenteel 10 maanden in dienst bij zijn werkgever. Kan hij op basis van deze anciënniteit al gebruikmaken van het recht op ouderschapsverlof?</span>
+        </div>
+        <div class="options-list">
+          <label class="option" id="opt-17-A"><input type="radio" name="q17" value="A"><span class="option-key">A</span><span class="option-text">Ja, want vanaf 6 maanden anciënniteit kan een werknemer ouderschapsverlof opnemen.</span></label>
+          <label class="option" id="opt-17-B"><input type="radio" name="q17" value="B"><span class="option-key">B</span><span class="option-text">Nee, want de werknemer moet in principe gedurende 12 maanden in de 15 maanden voorafgaand aan de aanvraag in dienst zijn geweest.</span></label>
+          <label class="option" id="opt-17-C"><input type="radio" name="q17" value="C"><span class="option-key">C</span><span class="option-text">Ja, op voorwaarde dat zijn werkgever hiermee akkoord gaat.</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-18">
+        <div class="question-header">
+          <span class="q-num">18</span>
+          <span class="q-text">Een bediende heeft een brutodagloon van €175 en neemt bij zijn nieuwe werkgever 5 wettelijke vakantiedagen op die betrekking hebben op reeds betaald vertrekvakantiegeld. Welk bedrag wordt volgens de 10%-regeling als voorschot uitbetaald?</span>
+        </div>
+        <div class="options-list">
+          <label class="option" id="opt-18-A"><input type="radio" name="q18" value="A"><span class="option-key">A</span><span class="option-text">€87,50</span></label>
+          <label class="option" id="opt-18-B"><input type="radio" name="q18" value="B"><span class="option-key">B</span><span class="option-text">€787,50</span></label>
+          <label class="option" id="opt-18-C"><input type="radio" name="q18" value="C"><span class="option-key">C</span><span class="option-text">€875,00</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-19">
+        <div class="question-header">
+          <span class="q-num">19</span>
+          <span class="q-text">Een werknemer heeft op het moment van ontslag door zijn werkgever 6 jaar anciënniteit. Welke wettelijke opzeggingstermijn geldt in principe?</span>
+        </div>
+        <div class="options-list">
+          <label class="option" id="opt-19-A"><input type="radio" name="q19" value="A"><span class="option-key">A</span><span class="option-text">18 weken</span></label>
+          <label class="option" id="opt-19-B"><input type="radio" name="q19" value="B"><span class="option-key">B</span><span class="option-text">21 weken</span></label>
+          <label class="option" id="opt-19-C"><input type="radio" name="q19" value="C"><span class="option-key">C</span><span class="option-text">24 weken</span></label>
+        </div>
+      </div>
+
+      <div class="question-card" id="qcard-20">
+        <div class="question-header">
+          <span class="q-num">20</span>
+          <span class="q-text">Een werknemer is op 1 april in dienst gekomen bij een nieuwe werkgever. Beschikbare gegevens deze maand: 5 wettelijke vakantiedagen opgenomen, vakantieattest van de vorige werkgever, 1 dag ziekte, bedrijfswagen met privégebruik, maaltijdcheques, voltijdse tewerkstelling. Welke van onderstaande acties bevat de meest volledige set van controles die een payroll consultant vóór de payrollafsluiting zou moeten uitvoeren?</span>
+        </div>
+        <div class="options-list">
+          <label class="option" id="opt-20-A"><input type="radio" name="q20" value="A"><span class="option-key">A</span><span class="option-text">Enkel controleren of de 5 vakantiedagen en de ziektedag correct geregistreerd zijn.</span></label>
+          <label class="option" id="opt-20-B"><input type="radio" name="q20" value="B"><span class="option-key">B</span><span class="option-text">Vakantieattest en 10%-regeling controleren, ziekte en gewaarborgd loon controleren, VAA van de bedrijfswagen controleren, maaltijdcheques controleren en nagaan of alle loon- en prestatiegegevens correct verwerkt zijn.</span></label>
+          <label class="option" id="opt-20-C"><input type="radio" name="q20" value="C"><span class="option-key">C</span><span class="option-text">Enkel het brutoloon en de bedrijfsvoorheffing controleren, aangezien de overige elementen automatisch door het payrollsysteem worden berekend.</span></label>
+          <label class="option" id="opt-20-D"><input type="radio" name="q20" value="D"><span class="option-key">D</span><span class="option-text">Enkel controleren of de werknemer correct in DIMONA staat en vervolgens de payroll laten berekenen.</span></label>
         </div>
       </div>
 
       <div class="submit-section">
-        <span class="submit-note" id="submitNote">Beantwoord alle 15 vragen om in te dienen.</span>
+        <span class="submit-note" id="submitNote">Beantwoord alle 20 vragen om in te dienen.</span>
         <button type="button" class="btn" id="submitBtn" disabled onclick="submitTest()">Resultaat indienen</button>
       </div>
     </form>
@@ -607,25 +668,30 @@
   const API_ENDPOINT = 'https://europe-west1-uc-hr-test-sollicitanten.cloudfunctions.net/hr-tests-mailer';
 
   const TEST_NAME = 'HR Hard Skills';
-  const CORRECT = { q1:'A', q2:'B', q3:'C', q4:'C', q5:'B', q6:'C', q7:'B', q8:'C', q9:'C', q10:'A', q11:'A', q12:'B', q13:'C', q14:'C', q15:'A' };
+  const CORRECT = { q1:'B', q2:'B', q3:'B', q4:'C', q5:'C', q6:'A', q7:'B', q8:'A', q9:'B', q10:'A', q11:'B', q12:'C', q13:'B', q14:'B', q15:'B', q16:'C', q17:'B', q18:'A', q19:'B', q20:'B' };
   const QUESTIONS = {
-    q1: 'Wat is het verschil tussen brutoloon en nettoloon?',
-    q2: 'Hoe werkt de opbouw van jaarlijkse vakantie in België?',
-    q3: 'Je werkt als bediende en wordt ziek. Hoe lang betaalt je werkgever gewaarborgd loon en vanaf wanneer neemt de mutualiteit dit over?',
-    q4: 'Wie betaalt het loon van de werknemer tijdens haar zwangerschapsverlof?',
-    q5: 'Wat is het verschil tussen een opzeggingsvergoeding en een verbrekingsvergoeding?',
-    q6: 'Hoelang moet je in dienst zijn om ouderschapsverlof te kunnen opnemen?',
-    q7: 'Op hoeveel weken moederschapsrust heb je recht als je mama wordt?',
-    q8: 'Welke verzekering ben je verplicht te voorzien als werkgever voor elke werknemer in België?',
-    q9: 'Wat is een netto-vergoeding?',
-    q10: 'Wat is het doel van een DIMONA-aangifte voor een werkgever?',
-    q11: 'Wat is de huidige werknemersbijdrage RSZ in België?',
-    q12: 'Wat is het VAA voor een bedrijfswagen?',
-    q13: 'Wat is het systeem van de "flexibele verloning" of het cafetariaplan?',
-    q14: 'Wat is de maximale onbelaste kilometervergoeding voor verplaatsingen voor beroepsdoeleinden met de eigen wagen (2026)?',
-    q15: 'Wat is CAO 32bis?'
+    q1: 'Wat is de DIMONA-aangifte?',
+    q2: 'Hoeveel bedraagt de persoonlijke RSZ-bijdrage van een gewone werknemer in principe op het brutoloon?',
+    q3: 'Een voltijdse werknemer werkt gedurende een volledig vakantiedienstjaar in een vijfdagenweek. Op hoeveel wettelijke vakantiedagen heeft hij in het daaropvolgende vakantiejaar in principe recht?',
+    q4: 'Hoeveel uur kan een student per kalenderjaar werken tegen de verminderde sociale bijdragen?',
+    q5: 'Wat is de DmfA?',
+    q6: 'Hoeveel bedraagt de basiswerkgeversbijdrage aan de RSZ voor een gewone werknemer in de privésector na de taxshift?',
+    q7: 'Een werknemer krijgt een bedrijfswagen die hij ook privé mag gebruiken. Welke elementen spelen een rol bij de berekening van het belastbare voordeel alle aard?',
+    q8: 'Een werkgever stelt een smartphone/GSM ter beschikking die de werknemer ook privé mag gebruiken. Hoeveel bedraagt het forfaitaire voordeel alle aard voor het toestel zelf?',
+    q9: 'Welke voorwaarde geldt in principe om als werknemer een flexi-job te kunnen uitoefenen?',
+    q10: 'Een bediende heeft recht op 20 wettelijke vakantiedagen. Hoeveel bedraagt het dubbel vakantiegeld in principe?',
+    q11: 'Een bediende start op 1 april bij een nieuwe werkgever. Bij zijn vorige werkgever heeft hij vertrekvakantiegeld ontvangen. In juni neemt hij 5 wettelijke vakantiedagen op bij zijn nieuwe werkgever. Welke uitspraak is correct?',
+    q12: 'Een werknemer is langdurig arbeidsongeschikt. De periode van gewaarborgd loon is verstreken. Wie betaalt in principe de arbeidsongeschiktheidsuitkering vanaf dat moment?',
+    q13: 'Een werknemer hervat het werk na een periode van arbeidsongeschiktheid en werkt opnieuw gedeeltelijk in het kader van een toegestane progressieve werkhervatting. Welke uitspraak is correct?',
+    q14: 'Een werknemer vraagt aan de payroll consultant wanneer hij recht heeft op een eindejaarspremie. Welke uitspraak is het meest correct?',
+    q15: 'Een werknemer wordt ontslagen en ontvangt een opzeggingsvergoeding. Wat vormt in principe de berekeningsbasis?',
+    q16: 'Een werknemer werkt structureel en regelmatig van thuis uit en voldoet aan de voorwaarden om een forfaitaire thuiswerkvergoeding te ontvangen. Wat is vanaf 1 september 2026 het maximale maandelijkse bedrag dat de werkgever als forfaitaire kantoorvergoeding kan toekennen?',
+    q17: 'Een werknemer wil zijn arbeidsprestaties met 1/5 verminderen in het kader van ouderschapsverlof. Hij is momenteel 10 maanden in dienst bij zijn werkgever. Kan hij op basis van deze anciënniteit al gebruikmaken van het recht op ouderschapsverlof?',
+    q18: 'Een bediende heeft een brutodagloon van €175 en neemt bij zijn nieuwe werkgever 5 wettelijke vakantiedagen op die betrekking hebben op reeds betaald vertrekvakantiegeld. Welk bedrag wordt volgens de 10%-regeling als voorschot uitbetaald?',
+    q19: 'Een werknemer heeft op het moment van ontslag door zijn werkgever 6 jaar anciënniteit. Welke wettelijke opzeggingstermijn geldt in principe?',
+    q20: 'Een werknemer is op 1 april in dienst gekomen bij een nieuwe werkgever. Beschikbare gegevens deze maand: 5 wettelijke vakantiedagen opgenomen, vakantieattest van de vorige werkgever, 1 dag ziekte, bedrijfswagen met privégebruik, maaltijdcheques, voltijdse tewerkstelling. Welke van onderstaande acties bevat de meest volledige set van controles die een payroll consultant vóór de payrollafsluiting zou moeten uitvoeren?'
   };
-  const TOTAL = 15;
+  const TOTAL = 20;
   const TIME_LIMIT_SECONDS = 8 * 60;
   const WARNING_AT = 2 * 60;
   const CRITICAL_AT = 30;
